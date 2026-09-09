@@ -80,7 +80,7 @@ if [ "${CPU_ONLY:-0}" = "1" ]; then
     echo "[5/5] Skipping flash-attn (CPU_ONLY set)."
 else
     echo "[5/5] Installing flash-attn (optional; requires nvcc + CUDA toolkit) ..."
-    if "$PYTHON_BIN" -m pip install "flash-attn>=2.5" --no-build-isolation; then
+    if "$PYTHON_BIN" -m pip install "flash-attn==2.8.3" --no-build-isolation; then
         echo "      flash-attn installed."
     else
         echo "      WARNING: flash-attn failed to build. This is only required for"
