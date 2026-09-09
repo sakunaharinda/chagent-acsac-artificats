@@ -5,6 +5,7 @@ __pycache__/
 
 job_*.sh
 CLAUDE.md
+.DS_Store
 
 # C extensions
 *.so
