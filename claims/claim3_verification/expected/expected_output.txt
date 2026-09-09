@@ -1,0 +1,36 @@
+Expected output — Claim 3 (policy verifier)
+===========================================
+
+eval_test.py prints three things, in order:
+
+1) Binary classification report (negative = correct, positive = any error):
+
+              precision    recall  f1-score   support
+
+    negative      <...>     <...>     <...>     <...>
+    positive      <...>     <...>     <...>     <...>
+
+    accuracy                          <...>     <...>
+   macro avg      <...>     <...>     <...>     <...>
+weighted avg      <...>     <...>     <...>     <...>
+
+2) Matthews correlation coefficient for the binary task:
+
+MCC: <mcc in [-1, 1]>
+
+3) 12-class classification report over label ids 0..11 (ID2AUGS order):
+   0=allow_deny 1=csub 2=cact 3=cres 4=ccond 5=cpur
+   6=msub 7=mres 8=mcond 9=mpur 10=mrules 11=correct
+
+              precision    recall  f1-score   support
+           0      <...>     <...>     <...>     <...>
+           ...
+          11      <...>     <...>     <...>     <...>
+   ...
+====================================================================...
+
+Reference values from the paper (FILL IN):
+  Binary:   precision <...>  recall <...>  F1 <...>   MCC <...>
+  12-class: macro-F1 <...>  (weighted-F1 <...>)
+
+A successful reproduction matches these within small run-to-run variation.

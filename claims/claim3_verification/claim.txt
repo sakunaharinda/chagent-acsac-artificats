@@ -1,0 +1,40 @@
+CLAIM 3 — Access Control Policy Verification
+============================================
+
+Claim
+-----
+CHAGent's verifier (a fine-tuned facebook/bart-large classifier) reliably
+decides whether a generated policy correctly represents its NLACP, both as a
+binary correct/incorrect decision and as a fine-grained 12-class error
+categorization (correct + 11 error types). This verifier is what drives the
+iterative refinement in Claim 2.
+
+Maps to
+-------
+Paper Section/Table: <FILL IN — e.g., "Table Z: verifier performance">.
+
+What run.sh does
+----------------
+Evaluates the PROVIDED verifier checkpoint (trained with seed 2) on the held-out
+verification test set (artifact/data/verification/utest.csv) using
+artifact/validation/eval_test.py (no training performed).
+
+Metrics reported
+----------------
+  - Binary classification report (negative = "correct" [label 11],
+    positive = "any error"): precision / recall / f1 / support.
+  - Matthews Correlation Coefficient (MCC) for the binary task.
+  - 12-class classification report over label ids 0..11
+    (see ID2AUGS: allow_deny, csub, cact, cres, ccond, cpur, msub, mres,
+     mcond, mpur, mrules, correct).
+
+Prerequisites
+-------------
+- venv active (../install.sh); HuggingFace access configured (facebook/bart-large).
+- Verifier checkpoint present at:
+      artifact/checkpoints/verification/checkpoint
+  (eval_test.py resolves this path relative to artifact/validation/.)
+  This is the seed-2 checkpoint.
+
+Note: eval_test.py has no command-line arguments; the test-set path and the
+checkpoint path are fixed inside the script.

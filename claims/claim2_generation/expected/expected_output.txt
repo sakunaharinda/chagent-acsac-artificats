@@ -1,0 +1,47 @@
+Expected output — Claim 2 (DSARCP generation, end-to-end CHAGent)
+================================================================
+
+For EACH (dataset, seed) run, eval_chagent.py prints two result blocks:
+
+ ========================= Results (SARCP) =================================
+
+Mode: <mode>
+Refinement: True
+Retrieval" True
+Post-process: True
+Using pipe: False
+Time elapsed: <t>s
+
+Precision: <p_srl>
+Recall: <r_srl>
+F1: <f1_srl>
+
+Component-wise results: {'subject': {...}, 'resource': {...}, 'purpose': {...}, 'condition': {...}}
+
+ ========================= Results (ACR Generation) =========================
+
+Precision: <p_acr>
+Recall: <r_acr>
+F1: <f1_acr>
+
+ ============================================================================
+
+Aggregation (done EXTERNALLY):
+  For each dataset, take the SARCP F1 (and ACR-Generation F1) from the three
+  seed runs and report mean +/- standard deviation.
+
+Reference values from the paper (FILL IN):
+
+  dataset     SARCP F1 (mean +/- SD)     ACR-Gen F1 (mean +/- SD)
+  --------    ----------------------     ------------------------
+  t2p         <...> +/- <...>            <...> +/- <...>
+  acre        <...> +/- <...>            <...> +/- <...>
+  ibm         <...> +/- <...>            <...> +/- <...>
+  collected   <...> +/- <...>            <...> +/- <...>
+  cyber       <...> +/- <...>            <...> +/- <...>
+
+Notes:
+  - The three per-seed F1 values should be close to one another; their mean
+    should match the paper within the reported SD.
+  - Generations are also saved to <RESULT_DIR>/<mode>/generations_refined.json
+    and per-example refinement traces under <RESULT_DIR>/<mode>/refinements/.

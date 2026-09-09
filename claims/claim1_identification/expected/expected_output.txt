@@ -1,0 +1,27 @@
+Expected output — Claim 1 (NLACP identification)
+================================================
+
+evaluate_classification.py prints, for EACH fold, a block of this form:
+
+ =============================== Evaluating ================================
+
+Test path: ../data/document_folds/<fold>.csv
+
+{'accuracy': <A>, 'f1': <F1>, 'precision': <P>, 'recall': <R>}
+
+ ===========================================================================
+
+The four numbers are floats in [0, 1].
+
+Reference values from the paper (FILL IN from the identification results table):
+
+  fold        accuracy   precision   recall   F1
+  --------    --------   ---------   ------   ----
+  t2p         <...>      <...>       <...>    <...>
+  acre        <...>      <...>       <...>    <...>
+  ibm         <...>      <...>       <...>    <...>
+  collected   <...>      <...>       <...>    <...>
+  cyber       <...>      <...>       <...>    <...>
+  overall     <...>      <...>       <...>    <...>
+
+A successful reproduction matches these within small run-to-run variation.

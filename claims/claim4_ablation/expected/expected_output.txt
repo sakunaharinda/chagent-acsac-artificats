@@ -1,0 +1,33 @@
+Expected output — Claim 4 (ablation)
+====================================
+
+Each configuration prints the same two blocks as Claim 2:
+
+ ========================= Results (SARCP) =================================
+ ...
+ Precision / Recall / F1 (+ component-wise F1)
+ ========================= Results (ACR Generation) =========================
+ Precision / Recall / F1
+ ============================================================================
+
+The "Refinement", "Retrieval", and "Post-process" lines in the SARCP block
+confirm which configuration ran:
+
+  Config                       Retrieval   Post-process   Refinement
+  --------------------------   ---------   ------------   ----------
+  A_no_retrieve                False       (n/a)          False
+  B_retrieve_no_update         True        False          False
+  C_retrieve_update            True        True           False
+  D_full_refine                True        True           True
+
+Aggregate per-seed F1 EXTERNALLY (mean +/- SD per config, per dataset).
+
+Reference values from the paper (FILL IN, e.g. SARCP F1 mean +/- SD):
+
+  dataset = <mode>
+    A_no_retrieve         <...> +/- <...>
+    B_retrieve_no_update  <...> +/- <...>
+    C_retrieve_update     <...> +/- <...>
+    D_full_refine         <...> +/- <...>
+
+Expected trend: F1(A) < F1(B) < F1(C) < F1(D), matching the paper's ablation.

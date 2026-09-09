@@ -1,0 +1,55 @@
+================================================================================
+ CHAGent — Intended Use and Limitations
+ ACSAC'26 Artifact (Paper #186)
+================================================================================
+
+INTENDED USE
+------------
+This artifact is a research prototype released to (a) allow independent
+verification of the results reported in the paper and (b) support follow-up
+research on translating natural-language access requirements into structured,
+machine-enforceable access control policies.
+
+It is intended to be run by artifact reviewers and researchers in a controlled
+environment (see infrastructure/README.txt). Typical uses:
+  - Reproducing the identification, generation, and verification results.
+  - Studying the contribution of retrieval and iterative refinement (ablations).
+  - Building on the models, prompts, and evaluation code for new research.
+
+INTENDED SCOPE OF INPUTS
+------------------------
+  - English-language sentences describing access requirements (NLACPs).
+  - The datasets shipped in artifact/data/ (t2p, acre, ibm, collected, cyber),
+    which come from access-control corpora used in the paper.
+
+LIMITATIONS
+-----------
+  - Research quality, not production: outputs are probabilistic and can be
+    wrong (missing rules, incorrect subjects/resources, flipped decisions).
+    The verifier reduces but does not eliminate such errors.
+  - NOT a security enforcement mechanism. Generated policies MUST be reviewed
+    by a human before being used to grant or deny real access. Do not wire the
+    raw output into any live authorization system.
+  - Language/domain bound: trained and evaluated on English text from specific
+    domains; behavior on other languages or domains is untested.
+  - Model dependence: the generator is a fine-tuned LLaMa-3-8B-Instruct and
+    inherits that model's biases and failure modes; the base model is gated and
+    subject to Meta's license terms.
+  - Compute bound: a CUDA GPU is required. CPU-only execution is not supported
+    for the LLaMa-3 generator or BART verifier at usable speed.
+  - Determinism: generation uses greedy decoding, but exact metric values may
+    vary across hardware, driver, and library versions.
+
+ETHICAL CONSIDERATIONS
+----------------------
+The models process access-control text that may reference organizational roles
+and resources. Do not submit real, sensitive, or personally identifying policy
+text to third-party services. Any deployment that affects real access decisions
+must keep a human in the loop and undergo independent security review.
+
+DATA AND MODEL LICENSES
+-----------------------
+Use of meta-llama/Meta-Llama-3-8B-Instruct, facebook/bart-large,
+bert-base-uncased, mixedbread-ai/mxbai-embed-large-v1, and the bundled datasets
+is subject to their respective upstream licenses/terms. See license.txt for the
+license covering the code and artifact contributed here.

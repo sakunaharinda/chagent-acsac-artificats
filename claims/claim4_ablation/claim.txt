@@ -1,0 +1,43 @@
+CLAIM 4 — Ablation: contribution of retrieval, post-processing, and refinement
+==============================================================================
+
+Claim
+-----
+Each stage of CHAGent's generation pipeline contributes to final quality:
+entity RETRIEVAL, retrieval-based POST-PROCESSING (snapping generated values to
+known entities), and verifier-guided iterative REFINEMENT each improve the
+generation metrics over the preceding configuration.
+
+Maps to
+-------
+Paper Section/Table: <FILL IN — e.g., "Table W: ablation study">.
+
+What run.sh does
+----------------
+Runs artifact/generation/evaluation/eval_chagent.py in four configurations on
+the SAME provided generator checkpoints (no training), for each dataset and
+each of the three seeds:
+
+  (A) No retrieval                 : --no_retrieve
+  (B) Retrieval, no post-process   : --no_update
+  (C) Retrieval + post-process     : (no flags; retrieval + update on)
+  (D) Full CHAGent                 : --refine   (retrieval + update + refinement)
+
+As in Claim 2, the script is run per seed and MEAN/SD across the three seeds are
+computed EXTERNALLY from the printed per-seed F1 values.
+
+Metrics reported (per config, per dataset, per seed)
+----------------------------------------------------
+  Results (SARCP):          Precision, Recall, F1 (+ component-wise F1).
+  Results (ACR Generation): Precision, Recall, F1.
+
+Prerequisites
+-------------
+Same as Claim 2:
+  - Generator checkpoints at artifact/generation/checkpoints/<mode>_act_<seed>/checkpoint
+  - Verifier checkpoint at   artifact/generation/checkpoints/verification/checkpoint
+    (needed only for configuration D, --refine)
+  - venv active, HuggingFace access configured, GPU available.
+
+Expectation: F1 increases roughly A < B < C < D, matching the ablation trend in
+the paper.

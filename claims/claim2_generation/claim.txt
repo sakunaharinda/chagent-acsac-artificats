@@ -1,0 +1,50 @@
+CLAIM 2 — Access Control Policy Generation (DSARCP), end-to-end CHAGent
+=======================================================================
+
+Claim
+-----
+CHAGent generates correct Access Control Policies (decision, subject, action,
+resource, condition, purpose — the "DSARCP" setting) from NLACPs. The full
+pipeline (LoRA fine-tuned LLaMa-3-8B generator + FAISS entity retrieval +
+BART-verifier-guided iterative refinement) achieves the SRL and ACR-generation
+F1 reported in the paper across datasets.
+
+Maps to
+-------
+Paper Section/Table: <FILL IN — e.g., "Table Y: DSARCP generation results">.
+
+What run.sh does
+----------------
+For each dataset and each of the THREE seeds, runs
+artifact/generation/evaluation/eval_chagent.py with retrieval + refinement
+enabled (the default CHAGent configuration), using the PROVIDED checkpoints
+(no training). Each run prints its metrics and writes generations under
+<RESULT_DIR>/<mode>/.
+
+IMPORTANT — reproduction protocol:
+  * The script is intended to be run 3 times per dataset (once per seed).
+  * MEAN and STANDARD DEVIATION across the three seeds are computed EXTERNALLY
+    (not by this script). Collect the three per-seed F1 values printed by the
+    runs and aggregate them yourself, then compare mean +/- SD to the paper.
+
+Metrics reported (per dataset, per seed)
+----------------------------------------
+  Results (SARCP):          Precision, Recall, F1, plus component-wise F1.
+  Results (ACR Generation): Precision, Recall, F1.
+
+Prerequisites
+-------------
+- venv active (../install.sh), HuggingFace access configured, GPU available.
+- Generator checkpoints present at:
+      artifact/generation/checkpoints/<mode>_act_<seed>/checkpoint
+  for every (mode, seed) evaluated. (eval_chagent.py resolves "../checkpoints"
+  relative to artifact/generation/evaluation/, i.e. artifact/generation/checkpoints/.)
+- Verifier checkpoint (seed 2) present at:
+      artifact/generation/checkpoints/verification/checkpoint
+  (Copy or symlink your trained BART verifier checkpoint to this path; it is
+  required because refinement is enabled.)
+
+Configuration
+-------------
+Edit the SEEDS and DATASETS variables at the top of run.sh so the seed values
+match your checkpoint directory names (<mode>_act_<seed>).

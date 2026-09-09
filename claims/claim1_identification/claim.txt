@@ -1,0 +1,35 @@
+CLAIM 1 — NLACP Identification
+==============================
+
+Claim
+-----
+CHAGent's identification module (a fine-tuned bert-base-uncased binary
+classifier) accurately distinguishes Natural Language Access Control
+Requirements (NLACPs) from non-NLACP sentences across the evaluation document
+folds (t2p, acre, ibm, collected, cyber, and the combined "overall" set).
+
+Maps to
+-------
+Paper Section/Table: <FILL IN — e.g., "Table X: NLACP identification results">.
+
+What run.sh does
+----------------
+Evaluates the PROVIDED identification checkpoint for each document fold using
+artifact/identification/evaluate_classification.py. One checkpoint per dataset
+is available at:
+    artifact/checkpoints/id/<fold>/checkpoint
+(No training is performed; this reproduces the reported test-set metrics.)
+
+Metrics reported (per fold)
+---------------------------
+accuracy, precision, recall, F1  (printed as a Python dict).
+
+Prerequisites
+-------------
+- ../install.sh has been run and the venv is active.
+- HuggingFace access configured (HF_TOKEN or `huggingface-cli login`) so
+  bert-base-uncased can be downloaded.
+- Identification checkpoints present at artifact/checkpoints/id/<fold>/checkpoint.
+
+See expected/expected_output.txt for the output format and where to compare the
+numbers against the paper.
