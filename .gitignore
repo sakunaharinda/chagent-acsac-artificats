@@ -3,6 +3,10 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+job_train.sh
+job_eval.sh
+CLAUDE.md
+
 # C extensions
 *.so
 
