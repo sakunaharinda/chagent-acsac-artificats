@@ -33,8 +33,9 @@ Metrics reported (per config, per dataset, per seed)
 
 Prerequisites
 -------------
-Same as Claim 2:
+Same as Claim 2 (run ../download_checkpoints.sh first):
   - Generator checkpoints at artifact/generation/checkpoints/<mode>_act_<seed>/checkpoint
+    (seeds 2, 3, 4)
   - Verifier checkpoint at   artifact/generation/checkpoints/verification/checkpoint
     (needed only for configuration D, --refine)
   - venv active, HuggingFace access configured, GPU available.

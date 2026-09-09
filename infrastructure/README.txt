@@ -39,6 +39,17 @@ EXTERNAL ACCESS / ACCOUNTS REQUIRED
         mixedbread-ai/mxbai-embed-large-v1     (retrieval embeddings)
     After the first download these are cached under HF_HOME.
   - Generator training data is fetched from the HuggingFace Hub by dataset name.
+  - Pretrained CHAGent checkpoints (~15 GB+) are downloaded from:
+        https://huggingface.co/chagent-artifacts
+        chagent-artifacts/chagent-generation     (~9.8 GB) generators + verifier
+        chagent-artifacts/chagent-verification    (~4.9 GB) seed-2 BART verifier
+        chagent-artifacts/chagent-identification  identifiers (single seed)
+    Use ../download_checkpoints.sh to fetch and place them. The generation and
+    verification repos are public; the identification repo may be private/gated
+    (set HF_TOKEN / huggingface-cli login). The identification download is
+    non-fatal and its checkpoints are linked automatically; if unavailable, train
+    locally (see claims/claim1_identification).
+  - Testing datasets are already included under artifact/data/ (no download).
 
 PUBLIC RESEARCH INFRASTRUCTURE (optional)
 -----------------------------------------

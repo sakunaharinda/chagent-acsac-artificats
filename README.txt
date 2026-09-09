@@ -65,16 +65,34 @@ INSTALLATION
   # Optional but recommended: point the HF cache at a large disk
   export HF_HOME=/path/with/space/huggingface
 
-DATA (already included under artifact/data/)
---------------------------------------------
+DATA (already included under artifact/data/ — no download needed)
+-----------------------------------------------------------------
   document_folds/<fold>.csv       Identification test data (columns: input, acp, output)
   document_folds/<fold>_acp.csv   Generation eval data    (columns: input, output[, origin])
   vectorstores/<dataset>/...      FAISS entity indexes for retrieval
   verification/{utrain,uval,utest}.csv  Verifier data (labels 0-11)
 
   Folds/datasets: t2p, acre, ibm, collected, cyber, overall (+ misc store).
-  Generator TRAINING data is pulled from the HuggingFace Hub by name
-  (e.g. "Sakuna/llama3_cyber_reasoning_chat_with_act"), not from disk.
+
+PRETRAINED CHECKPOINTS (download; ~15 GB total)
+-----------------------------------------------
+Checkpoints are hosted under https://huggingface.co/chagent-artifacts:
+  chagent-artifacts/chagent-generation     generators (<dataset>_act/<seed>/checkpoint,
+                                            seeds 2,3,4) + verification/checkpoint
+  chagent-artifacts/chagent-verification    seed-2 BART verifier (2/checkpoint)
+  chagent-artifacts/chagent-identification  identifiers (single seed; may be
+                                            private/gated — set HF_TOKEN)
+
+Fetch and arrange them into the exact paths the scripts expect with:
+
+    ./download_checkpoints.sh
+
+It symlinks the Hub's nested <dataset>_act/<seed>/checkpoint layout into the
+flat <dataset>_act_<seed>/checkpoint layout eval_chagent.py uses, places the
+verifier for both the generation and validation claims, and links the
+identification checkpoints to artifact/checkpoints/id/<dataset>/checkpoint. The
+identification download is non-fatal; if it is unavailable, train those quickly
+(see claims/claim1_identification).
 
 RUNNING THE MODULES (run each script from its OWN directory)
 ------------------------------------------------------------
@@ -92,7 +110,7 @@ RUNNING THE MODULES (run each script from its OWN directory)
   # 3. Generator (LoRA fine-tune)
   cd artifact/generation
   python train_generator.py \
-         --train_path="Sakuna/llama3_cyber_reasoning_chat_with_act" \
+         --train_path=<train_dataset> \
          --seed=2 --out_dir=../checkpoints/cyber_act_2
 
   # 4. End-to-end CHAGent evaluation (DSARCP, with refinement)
@@ -119,26 +137,36 @@ Each claim has a self-contained runner that EVALUATES PROVIDED CHECKPOINTS
   claims/claim3_verification/run.sh     evaluates the seed-2 verifier checkpoint
   claims/claim4_ablation/run.sh         retrieval/post-process/refinement ablation
 
-Checkpoints shipped with this artifact:
-  - Generation: complete set — every dataset x every seed
+Checkpoints (run ./download_checkpoints.sh first — see above):
+  - Generation: complete set — every dataset x seeds {2,3,4}
       (artifact/generation/checkpoints/<mode>_act_<seed>/checkpoint)
-  - Identification: ONE seed per dataset
-      (artifact/checkpoints/id/<mode>/checkpoint)
-  - Validation/verifier: the seed-2 checkpoint
-      (artifact/checkpoints/verification/checkpoint; also copy/symlink it to
-       artifact/generation/checkpoints/verification/checkpoint for Claims 2 & 4)
+  - Validation/verifier: the seed-2 checkpoint, placed for both claims at
+      artifact/checkpoints/verification/checkpoint            (Claim 3) and
+      artifact/generation/checkpoints/verification/checkpoint (Claims 2 & 4)
+  - Identification: single seed per dataset, from the chagent-identification
+      repo, linked to artifact/checkpoints/id/<mode>/checkpoint
+      (train locally if the repo is unavailable)
 
 Generation reproduction protocol (Claims 2 & 4):
-  The generation runner is executed THREE TIMES per dataset, once per seed.
-  Each run prints its own SARCP F1 and ACR-Generation F1. The MEAN and STANDARD
-  DEVIATION across the three seeds are computed EXTERNALLY (not by the script);
-  collect the three per-seed values and aggregate them, then compare to the
-  paper. Set the seed values via the SEEDS variable at the top of run.sh so they
-  match your checkpoint directory names (<mode>_act_<seed>).
+  The generation runner is executed THREE TIMES per dataset, once per seed
+  (seeds 2, 3, 4). Each run prints its own SARCP F1 and ACR-Generation F1. The
+  MEAN and STANDARD DEVIATION across the three seeds are computed EXTERNALLY
+  (not by the script); collect the three per-seed values and aggregate them,
+  then compare to the paper. The seed values are set via the SEEDS variable at
+  the top of run.sh and match the checkpoint directory names (<mode>_act_<seed>).
 
 Every run.sh prints results in the same format shown in the corresponding
 claims/<claim>/expected/ file. See each claim.txt for what it demonstrates and
 which paper table/figure it maps to.
+
+Note on seed coverage:
+  The generation checkpoints cover all three seeds (2, 3, 4), so Claims 2 and 4
+  reproduce the reported mean/SD directly. For identification (Claim 1) and
+  verification (Claim 3) we ship a single representative seed: these checkpoints
+  faithfully reproduce that seed's reported single-seed results. Obtaining the
+  full multi-seed mean/SD is then a simple extension, so
+  you can train the remaining seeds and evaluate them the same way. Each run.sh
+  prints the exact train command to do so.
 
 NOTE ON SECRETS
 ---------------

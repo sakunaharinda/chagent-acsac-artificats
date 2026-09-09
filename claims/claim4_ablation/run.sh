@@ -10,7 +10,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 # Keep this small by default (ablation is expensive x4 configs). Expand as needed.
 DATASETS="${DATASETS:-cyber}"
-SEEDS="${SEEDS:-1 2 3}"
+SEEDS="${SEEDS:-2 3 4}"
 K=3                               # entities retrieved per component (fixed at 3 for gen eval)
 RESULT_DIR="${RESULT_DIR:-results/ablation}"
 

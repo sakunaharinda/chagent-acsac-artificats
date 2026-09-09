@@ -15,7 +15,7 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 # Generator checkpoints must exist at:
 #   artifact/generation/checkpoints/<mode>_act_<seed>/checkpoint
 DATASETS="${DATASETS:-t2p acre ibm collected cyber}"
-SEEDS="${SEEDS:-1 2 3}"          # the three seeds used in the paper
+SEEDS="${SEEDS:-2 3 4}"          # the three seeds used in the paper (match checkpoint dirs)
 K=3                               # entities retrieved per component (fixed at 3 for gen eval)
 RESULT_DIR="${RESULT_DIR:-results/sarcp}"
 # ------------------------------------------------------------------

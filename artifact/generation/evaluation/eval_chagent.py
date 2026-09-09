@@ -33,7 +33,6 @@ def generate_refine(mode, df, gen_model, gen_tokenizer, ver_model, ver_tokenizer
     inputs, predpols, truepols, predsrls, truesrls = [],[],[],[],[]
     generations = []
     id = 0
-    fails = 0
     
     if use_pipe:
         gen_pipe = pipeline(
@@ -114,8 +113,6 @@ def generate_refine(mode, df, gen_model, gen_tokenizer, ver_model, ver_tokenizer
                     })
                     
                 except:
-                    fails+=1
-                    print(f'Fail count: {fails}')
                     break
             
             pred_srl = get_srls(pred_pol)

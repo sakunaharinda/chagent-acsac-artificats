@@ -35,16 +35,15 @@ Metrics reported (per dataset, per seed)
 Prerequisites
 -------------
 - venv active (../install.sh), HuggingFace access configured, GPU available.
-- Generator checkpoints present at:
-      artifact/generation/checkpoints/<mode>_act_<seed>/checkpoint
-  for every (mode, seed) evaluated. (eval_chagent.py resolves "../checkpoints"
-  relative to artifact/generation/evaluation/, i.e. artifact/generation/checkpoints/.)
-- Verifier checkpoint (seed 2) present at:
-      artifact/generation/checkpoints/verification/checkpoint
-  (Copy or symlink your trained BART verifier checkpoint to this path; it is
-  required because refinement is enabled.)
+- Checkpoints downloaded and arranged by ../download_checkpoints.sh, which
+  fetches them from https://huggingface.co/chagent-artifacts and creates:
+      artifact/generation/checkpoints/<mode>_act_<seed>/checkpoint   (generators)
+      artifact/generation/checkpoints/verification/checkpoint        (verifier)
+  The Hub stores generators nested as <mode>_act/<seed>/checkpoint; the helper
+  symlinks them to the flat <mode>_act_<seed> path eval_chagent.py expects.
+  The verifier is required here because refinement (--refine) is enabled.
 
-Configuration
--------------
-Edit the SEEDS and DATASETS variables at the top of run.sh so the seed values
-match your checkpoint directory names (<mode>_act_<seed>).
+Seeds
+-----
+The three seeds are 2, 3, 4 (matching the checkpoint directories on the Hub).
+Override via the SEEDS/DATASETS variables at the top of run.sh if needed.
