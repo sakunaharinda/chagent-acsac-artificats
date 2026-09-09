@@ -1,0 +1,38 @@
+# CHAGent (ACSAC'26, paper 186) — Python dependencies
+#
+# Tested with Python 3.10. A CUDA-capable GPU is required to train/run the
+# LLaMa-3-8B generator and the BART verifier.
+#
+# NOTE:
+#   * `torch` is installed separately by install.sh so the correct CUDA build
+#     is selected; a version floor is listed here for completeness.
+#   * `flash-attn` is NOT listed here because it must be built with
+#     --no-build-isolation against an already-installed torch. install.sh
+#     handles it. It is only needed for train_generator.py and
+#     eval_chagent_sar.py (attn_implementation="flash_attention_2").
+
+# --- Deep learning / model stack ---
+torch>=2.1,<2.5
+transformers>=4.46            # Trainer/SFTTrainer processing_class= API, LLaMa-3 chat template
+trl>=0.12                     # SFTConfig(max_length=...), SFTTrainer
+peft>=0.13                    # LoRA fine-tuning + PeftModel.from_pretrained
+accelerate>=0.34              # required by transformers Trainer
+datasets>=2.20                # HF Hub dataset loading (generator training data)
+bitsandbytes>=0.43            # "adamw_8bit" optimizer used by train_generator.py
+
+# --- Retrieval (RAG) stack ---
+langchain-community>=0.3      # FAISS vectorstore + HuggingFaceEmbeddings wrappers
+sentence-transformers>=3.0    # backs HuggingFaceEmbeddings (mxbai-embed-large-v1)
+faiss-cpu>=1.8                # FAISS similarity search over the entity indexes
+
+# --- Metrics / evaluation ---
+evaluate>=0.4                 # accuracy / f1 / precision / recall metrics
+scikit-learn>=1.3             # classification_report, MCC, confusion_matrix, train_test_split
+numpy>=1.24,<2.0             # kept <2.0 for ABI compatibility with the torch build
+
+# --- Data / IO / CLI utilities ---
+pandas>=2.0
+click>=8.1
+tqdm>=4.66
+pyyaml>=6.0
+tabulate>=0.9                 # generate_comparison.py result tables
