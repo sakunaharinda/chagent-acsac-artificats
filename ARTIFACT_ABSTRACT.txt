@@ -1,0 +1,27 @@
+Artifact Submission Abstract — CHAGent (ACSAC'26, Paper #186)
+============================================================
+
+This artifact consists of both code and testing data used to evaluate CHAGent across multiple seeds as described in the paper.
+
+SOURCE CODE
+--------------------------------------------
+The complete CHAGent pipeline and its evaluation harness are provided as source:
+  (1) an NLACP identification classifier (bert-base-uncased);
+  (2) an access-control-policy generator (LoRA-fine-tuned meta-llama/Meta-Llama-3-8B-Instruct) with FAISS-based entity retrieval (RAG) and verifier-guided iterative refinement; and
+  (3) a policy verifier (facebook/bart-large) that classifies a generated policy as correct or into one of 11 error categories.
+Training scripts, the generation/verification prompts, retrieval and post-processing utilities, and all metric code are included. This software produces the paper's evaluation results: (a) the NLACP identification experiment; (b) the end-to-end policy-generation experiment in the full DSARCP setting (SRL F1 and ACR-generation F1 across the t2p, acre, ibm, collected, cyber, and overall datasets); (c) the policy-verification experiment; and (d) the ablation study isolating the contributions of retrieval, retrieval-based post-processing, and iterative refinement.
+
+DATA
+----
+Test data used for evaluation is bundled in the repository (CSV, a few MB total):
+  - Per-test dataset "document folds": identification test files (columns: input, acp, output) and generation-evaluation files (columns: input, output, origin), for the t2p/acre/ibm/collected/cyber sets.
+  - Verifier data (columns: inputs, policies, policies_sent, labels), where the label is an integer 0-11 (11 = "correct", 0-10 = error categories).
+  - Precomputed FAISS vector indexes used by the retrieval step. Pretrained model checkpoints (~15 GB+ total) are distributed via HuggingFace (chagent-artifacts/chagent-generation, chagent-verification, and chagent-identification) and fetched/arranged by an included download script. The generated Access Control Policies follow a fixed six-field schema: decision (allow|deny), subject, action, resource, purpose, condition.
+
+REQUIREMENTS
+------------
+  - OS: Linux.
+  - Hardware: one NVIDIA CUDA GPU, preferrably A100 (>= 24 GB VRAM recommended for the 8B generator; BERT/BART fit in <= 16 GB). ~60 GB free disk recommended.
+  - Python 3.10, with dependencies pinned in requirements.txt (PyTorch, Transformers, PEFT, TRL, Accelerate, bitsandbytes, LangChain + FAISS, sentence-transformers, scikit-learn, evaluate). install.sh sets up a virtual environment and installs everything; flash-attn is optional.
+  - A HuggingFace account with accepted access to the gated model meta-llama/Meta-Llama-3-8B-Instruct (token or `huggingface-cli login`). Base models download automatically on first run.
+
