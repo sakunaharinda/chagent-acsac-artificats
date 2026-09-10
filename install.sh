@@ -6,8 +6,11 @@
 # Usage:
 #   ./install.sh                 # create ./.venv and install everything
 #   NO_VENV=1 ./install.sh       # install into the current environment
-#   TORCH_CUDA=cu118 ./install.sh# pick a specific CUDA wheel (default: cu121)
+#   TORCH_CUDA=cu118 ./install.sh# pin a specific CUDA wheel (Linux; e.g. older driver)
 #   CPU_ONLY=1 ./install.sh      # install CPU-only torch (no GPU; eval will be slow/unsupported)
+#
+# By default torch is installed from PyPI, whose Linux wheels already bundle a
+# CUDA runtime (and macOS gets the native build) — no --index-url needed.
 #
 # Requirements assumed to be present on the host:
 #   * Python 3.10 (python3.10 or python3 >= 3.9)
@@ -21,7 +24,6 @@ set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$HERE"
 
-TORCH_CUDA="${TORCH_CUDA:-cu121}"
 PYTHON_BIN="${PYTHON_BIN:-python3}"
 
 echo "=========================================================="
@@ -55,14 +57,24 @@ echo "[2/5] Upgrading pip / setuptools / wheel ..."
 
 # ---------------------------------------------------------------------------
 # 3. PyTorch (installed first so flash-attn can build against it)
+#    Default: install from PyPI, whose wheels already bundle a CUDA runtime on
+#    Linux (and give the native build on macOS) — no CUDA toolkit needed.
+#    Overrides:
+#      CPU_ONLY=1        -> force the CPU-only build
+#      TORCH_CUDA=cu118  -> pin a specific CUDA wheel (e.g. to match an older
+#                           NVIDIA driver); only works on Linux.
 # ---------------------------------------------------------------------------
 if [ "${CPU_ONLY:-0}" = "1" ]; then
     echo "[3/5] Installing CPU-only torch (GPU features will not work) ..."
-    "$PYTHON_BIN" -m pip install "torch>=2.1,<2.5"
-else
-    echo "[3/5] Installing torch (CUDA build: ${TORCH_CUDA}) ..."
-    "$PYTHON_BIN" -m pip install "torch>=2.1,<2.5" \
+    "$PYTHON_BIN" -m pip install "torch>=2.1" \
+        --index-url "https://download.pytorch.org/whl/cpu"
+elif [ -n "${TORCH_CUDA:-}" ]; then
+    echo "[3/5] Installing torch (pinned CUDA build: ${TORCH_CUDA}) ..."
+    "$PYTHON_BIN" -m pip install "torch>=2.1" \
         --index-url "https://download.pytorch.org/whl/${TORCH_CUDA}"
+else
+    echo "[3/5] Installing torch from PyPI (bundles CUDA on Linux) ..."
+    "$PYTHON_BIN" -m pip install "torch>=2.1"
 fi
 
 # ---------------------------------------------------------------------------

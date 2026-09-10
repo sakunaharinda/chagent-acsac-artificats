@@ -161,12 +161,22 @@ which paper table/figure it maps to.
 
 Note on seed coverage:
   The generation checkpoints cover all three seeds (2, 3, 4), so Claims 2 and 4
-  reproduce the reported mean/SD directly. For identification (Claim 1) and
-  verification (Claim 3) we ship a single representative seed: these checkpoints
-  faithfully reproduce that seed's reported single-seed results. Obtaining the
-  full multi-seed mean/SD is then a simple extension, so
-  you can train the remaining seeds and evaluate them the same way. Each run.sh
-  prints the exact train command to do so.
+  reproduce the reported per-seed results directly (mean/SD aggregated externally).
+
+  For identification (Claim 1) and verification (Claim 3) we publish a single
+  representative-seed CHECKPOINT (for verification, seed 2 — each verifier
+  checkpoint is ~5 GB, hence one seed), which reproduces that seed's reported
+  results exactly.
+    - Claim 3: the paper's verifier result is a mean over seeds 0, 1, 2. The
+      per-seed evaluation logs for all three are included as reference
+      (claims/claim3_verification/eval_logs/ver_{0,1,2}.txt); run.sh reproduces
+      seed 2, the only published checkpoint.
+    - Claim 1: one checkpoint per dataset (single seed) reproduces that seed's
+      identification results.
+  Reproducing additional seeds is a simple extension — both modules are
+  lightweight (BERT/BART) and the training scripts + data are included, so you
+  can retrain the remaining seeds and evaluate them the same way. Each run.sh
+  prints the exact train command; mean/SD across seeds is aggregated externally.
 
 NOTE ON SECRETS
 ---------------
