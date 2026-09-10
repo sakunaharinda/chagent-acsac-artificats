@@ -3,11 +3,7 @@ CLAIM 2 — Access Control Policy Generation (DSARCP), end-to-end CHAGent
 
 Claim
 -----
-CHAGent generates correct Access Control Policies (decision, subject, action,
-resource, condition, purpose — the "DSARCP" setting) from NLACPs. The full
-pipeline (LoRA fine-tuned LLaMa-3-8B generator + FAISS entity retrieval +
-BART-verifier-guided iterative refinement) achieves the SRL and ACR-generation
-F1 reported in the paper across datasets.
+CHAGent generates correct Access Control Policies (decision, subject, action, resource, condition, purpose — the "DSARCP" setting) from NLACPs. The full pipeline outperforms the current state-of-the-art in terms of the policy component extraction and ACR-generation F1 reported in the paper across datasets.
 
 Maps to
 -------

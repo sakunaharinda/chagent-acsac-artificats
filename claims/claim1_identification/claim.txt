@@ -3,10 +3,7 @@ CLAIM 1 — NLACP Identification
 
 Claim
 -----
-CHAGent's identification module (a fine-tuned bert-base-uncased binary
-classifier) accurately distinguishes Natural Language Access Control
-Requirements (NLACPs) from non-NLACP sentences across the evaluation document
-folds (t2p, acre, ibm, collected, cyber, and the combined "overall" set).
+CHAGent's identification module accurately distinguishes Natural Language Access Control Requirements (NLACPs) from non-NLACP sentences across the evaluation document folds (t2p, acre, ibm, collected, cyber, and the combined "overall" set) outperforming current state of the art.
 
 Maps to
 -------

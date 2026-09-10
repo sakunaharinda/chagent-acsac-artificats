@@ -3,11 +3,7 @@ CLAIM 3 — Access Control Policy Verification
 
 Claim
 -----
-CHAGent's verifier (a fine-tuned facebook/bart-large classifier) reliably
-decides whether a generated policy correctly represents its NLACP, both as a
-binary correct/incorrect decision and as a fine-grained 12-class error
-categorization (correct + 11 error types). This verifier is what drives the
-iterative refinement in Claim 2.
+CHAGent's verifier reliably decides whether a generated policy correctly represents its NLACP, both as a binary correct/incorrect decision and as a fine-grained 12-class error categorization (correct + 11 error types). This verifier is what drives the iterative refinement in Claim 2.
 
 Maps to
 -------
