@@ -3,10 +3,7 @@ CLAIM 4 — Ablation: contribution of retrieval, post-processing, and refinement
 
 Claim
 -----
-Each stage of CHAGent's generation pipeline contributes to final quality:
-entity RETRIEVAL, retrieval-based POST-PROCESSING (snapping generated values to
-known entities), and verifier-guided iterative REFINEMENT each improve the
-generation metrics over the preceding configuration.
+Each stage of CHAGent's generation pipeline contributes to final quality: entity RETRIEVAL, retrieval-based POST-PROCESSING (snapping generated values to known entities), and verifier-guided iterative REFINEMENT each improve the generation metrics over the preceding configuration.
 
 Maps to
 -------

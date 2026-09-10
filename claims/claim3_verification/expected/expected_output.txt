@@ -1,36 +1,49 @@
 Expected output — Claim 3 (policy verifier)
 ===========================================
 
-eval_test.py prints three things, in order:
+Reference logs
+--------------
+Verifier evaluation reports for three training seeds are included (trimmed to
+the report section) under:
+    claims/claim3_verification/eval_logs/ver_0.txt   (seed 0)
+    claims/claim3_verification/eval_logs/ver_1.txt   (seed 1)
+    claims/claim3_verification/eval_logs/ver_2.txt   (seed 2)
 
-1) Binary classification report (negative = correct, positive = any error):
+run.sh (eval_test.py) evaluates the PROVIDED seed-2 checkpoint, so its output
+should match ver_2.txt. Only the seed-2 checkpoint is published on the Hub
+(each verifier checkpoint is ~5 GB), so seeds 0 and 1 are reference-only: to
+reproduce them, retrain with train_test_verifier_single_split.py --seed=0/1
+(the verification training data is included).
 
-              precision    recall  f1-score   support
+Output format (what eval_test.py prints)
+-----------------------------------------
+  1) Binary classification report (negative = "correct" [label 11],
+     positive = "any error"): precision / recall / f1-score / support.
+  2) MCC: <matthews correlation coefficient> for the binary task.
+  3) 12-class classification report over label ids 0..11 (ID2AUGS:
+     0 allow_deny, 1 csub, 2 cact, 3 cres, 4 ccond, 5 cpur, 6 msub, 7 mres,
+     8 mcond, 9 mpur, 10 mrules, 11 correct).
 
-    negative      <...>     <...>     <...>     <...>
-    positive      <...>     <...>     <...>     <...>
+Reference values (from the included logs; test set N = 3029, 216 correct / 2813 error)
+--------------------------------------------------------------------------------------
+Binary task:
+  seed   neg P/R/F1        pos P/R/F1        accuracy   macro-F1   MCC
+  ----   --------------    --------------    --------   --------   ------
+  0      0.85/0.87/0.86    0.99/0.99/0.99    0.98       0.92       0.8475
+  1      0.92/0.85/0.88    0.99/0.99/0.99    0.98       0.94       0.8745
+  2      0.93/0.88/0.90    0.99/1.00/0.99    0.99       0.95       0.8981   <- reproduced by run.sh
 
-    accuracy                          <...>     <...>
-   macro avg      <...>     <...>     <...>     <...>
-weighted avg      <...>     <...>     <...>     <...>
+12-class task:
+  seed   accuracy   macro-F1   weighted-F1
+  ----   --------   --------   -----------
+  0      0.96       0.96       0.96
+  1      0.96       0.96       0.96
+  2      0.97       0.97       0.97       <- reproduced by run.sh
 
-2) Matthews correlation coefficient for the binary task:
-
-MCC: <mcc in [-1, 1]>
-
-3) 12-class classification report over label ids 0..11 (ID2AUGS order):
-   0=allow_deny 1=csub 2=cact 3=cres 4=ccond 5=cpur
-   6=msub 7=mres 8=mcond 9=mpur 10=mrules 11=correct
-
-              precision    recall  f1-score   support
-           0      <...>     <...>     <...>     <...>
-           ...
-          11      <...>     <...>     <...>     <...>
-   ...
-====================================================================...
-
-Reference values from the paper (FILL IN):
-  Binary:   precision <...>  recall <...>  F1 <...>   MCC <...>
-  12-class: macro-F1 <...>  (weighted-F1 <...>)
-
-A successful reproduction matches these within small run-to-run variation.
+Interpretation
+--------------
+Running run.sh on the provided seed-2 checkpoint should reproduce the seed-2 row
+(and the full per-class breakdown in ver_2.txt) exactly, since evaluation is
+deterministic (argmax over logits) on a fixed test set. The seed 0/1 rows show
+the run-to-run spread; the paper's mean/SD across seeds {0,1,2} is aggregated
+EXTERNALLY from these three values.
