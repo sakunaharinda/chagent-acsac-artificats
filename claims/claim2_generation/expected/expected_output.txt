@@ -1,47 +1,61 @@
 Expected output — Claim 2 (DSARCP generation, end-to-end CHAGent)
 ================================================================
 
-For EACH (dataset, seed) run, eval_chagent.py prints two result blocks:
+Reference logs
+--------------
+The exact stdout we obtained for each run is included (trimmed to start at the
+"Results (SARCP)" banner) under:
+    claims/claim2_generation/eval_logs/<dataset>_act_<seed>.txt
+Each corresponds to the full CHAGent configuration (retrieval + post-processing +
+iterative refinement, i.e. eval_chagent.py ... --refine). A new run's trailing
+output should match the "Results" blocks in the corresponding log.
 
+Output format (what eval_chagent.py prints)
+-------------------------------------------
  ========================= Results (SARCP) =================================
-
-Mode: <mode>
-Refinement: True
-Retrieval" True
-Post-process: True
-Using pipe: False
-Time elapsed: <t>s
-
-Precision: <p_srl>
-Recall: <r_srl>
-F1: <f1_srl>
-
-Component-wise results: {'subject': {...}, 'resource': {...}, 'purpose': {...}, 'condition': {...}}
-
+ Mode / Refinement=True / Retrieval=True / Post-process=True / Time elapsed
+ Precision / Recall / F1
+ Component-wise results: {subject, action, resource, purpose, condition -> tp/fp/fn/p/r/f1}
  ========================= Results (ACR Generation) =========================
-
-Precision: <p_acr>
-Recall: <r_acr>
-F1: <f1_acr>
-
+ Precision / Recall / F1
  ============================================================================
 
-Aggregation (done EXTERNALLY):
-  For each dataset, take the SARCP F1 (and ACR-Generation F1) from the three
-  seed runs and report mean +/- standard deviation.
+Reference values (from the included logs)
+-----------------------------------------
+Per-seed F1 for the full CHAGent pipeline. MEAN and SD across seeds {2,3,4} are
+computed EXTERNALLY from these per-seed values.
 
-Reference values from the paper (FILL IN):
+  dataset     seed    SARCP F1     ACR-Gen F1
+  ---------   ----    --------     ----------
+  t2p         2       0.9349       0.9263
+  t2p         3       0.9317       0.9171
+  t2p         4       0.9293       0.9315
+  acre        2       0.7349       0.6946
+  acre        3       0.7364       0.6997
+  acre        4       0.7419       0.7063
+  ibm         2       0.8496       0.8129
+  ibm         3       0.8041       0.7987
+  ibm         4       0.8779       0.8580
+  collected   2       0.8476       0.7862
+  collected   3       0.8720       0.8418
+  collected   4       0.8803       0.8256
+  cyber       3       0.6944       0.6646
+  cyber       4       0.6798       0.6688
+  overall     3       0.8476       0.8113
+  overall     4       0.8279       0.8033
 
-  dataset     SARCP F1 (mean +/- SD)     ACR-Gen F1 (mean +/- SD)
-  --------    ----------------------     ------------------------
-  t2p         <...> +/- <...>            <...> +/- <...>
-  acre        <...> +/- <...>            <...> +/- <...>
-  ibm         <...> +/- <...>            <...> +/- <...>
-  collected   <...> +/- <...>            <...> +/- <...>
-  cyber       <...> +/- <...>            <...> +/- <...>
+Coverage note
+-------------
+The generation checkpoints cover seeds 2, 3, and 4. In these reference logs,
+seeds 3 and 4 are present for every dataset; seed 2 is present for t2p, acre,
+ibm, and collected (cyber and overall have seeds 3 and 4). Compute the mean/SD
+over whichever seeds you run — a full three-seed set is available from the Hub
+checkpoints, so you can regenerate any missing seed with run.sh.
 
-Notes:
-  - The three per-seed F1 values should be close to one another; their mean
-    should match the paper within the reported SD.
-  - Generations are also saved to <RESULT_DIR>/<mode>/generations_refined.json
-    and per-example refinement traces under <RESULT_DIR>/<mode>/refinements/.
+Interpretation
+--------------
+A successful reproduction matches the SARCP F1 and ACR-Generation F1 above for
+the corresponding (dataset, seed) within small run-to-run variation (greedy
+decoding; minor differences across GPU/driver/library versions are expected).
+Generations are also written to <RESULT_DIR>/<mode>/generations_refined.json and
+per-example refinement traces to <RESULT_DIR>/<mode>/refinements/.

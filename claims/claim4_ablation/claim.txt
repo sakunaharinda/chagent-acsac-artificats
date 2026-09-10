@@ -15,16 +15,24 @@ Paper Section/Table: <FILL IN — e.g., "Table W: ablation study">.
 What run.sh does
 ----------------
 Runs artifact/generation/evaluation/eval_chagent.py in four configurations on
-the SAME provided generator checkpoints (no training), for each dataset and
-each of the three seeds:
+the SAME provided generator checkpoints (no training):
 
   (A) No retrieval                 : --no_retrieve
   (B) Retrieval, no post-process   : --no_update
   (C) Retrieval + post-process     : (no flags; retrieval + update on)
   (D) Full CHAGent                 : --refine   (retrieval + update + refinement)
 
-As in Claim 2, the script is run per seed and MEAN/SD across the three seeds are
-computed EXTERNALLY from the printed per-seed F1 values.
+On start, run.sh asks which scope to run:
+  [D] Default    — all datasets, seed 3, all 4 configs (~10 hours on an A100).
+                   Matches the seed-3 logs in eval_logs/ (config D matches
+                   Claim 2's seed-3 logs).
+  [E] Everything — all datasets, seeds 2, 3, 4, all 4 configs (~30 hours); the
+                   full three-seed ablation reported in the paper.
+Pressing Enter selects the Default. The prompt is skipped when SEEDS (or
+DATASETS) is preset in the environment; a non-interactive shell falls back to
+the Default. Each cell runs 4 configs and is dominated by config D (the full
+pipeline): roughly ibm ~40 min, cyber/collected ~50 min, t2p ~1.9 h, overall
+~2.1 h, acre ~3.6 h per seed (~10 h for all datasets at one seed).
 
 Metrics reported (per config, per dataset, per seed)
 ----------------------------------------------------
@@ -35,10 +43,8 @@ Prerequisites
 -------------
 Same as Claim 2 (run ../download_checkpoints.sh first):
   - Generator checkpoints at artifact/generation/checkpoints/<mode>_act_<seed>/checkpoint
-    (seeds 2, 3, 4)
+    (seeds 2, 3, 4; the Default scope uses seed 3, scope [E] uses all three)
   - Verifier checkpoint at   artifact/generation/checkpoints/verification/checkpoint
     (needed only for configuration D, --refine)
   - venv active, HuggingFace access configured, GPU available.
 
-Expectation: F1 increases roughly A < B < C < D, matching the ablation trend in
-the paper.

@@ -1,34 +1,0 @@
-/data/sjay950/research/CHAGent/generation/evaluation/utils.py:383: LangChainDeprecationWarning: The class `HuggingFaceEmbeddings` was deprecated in LangChain 0.2.2 and will be removed in 1.0. An updated version of the class exists in the :class:`~langchain-huggingface package and should be used instead. To use it run `pip install -U :class:`~langchain-huggingface` and import as `from :class:`~langchain_huggingface import HuggingFaceEmbeddings``.
-  embeddings = HuggingFaceEmbeddings(
-Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:14<00:42, 14.16s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:51<00:55, 27.97s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [01:31<00:33, 33.37s/it]Loading checkpoint shards: 100%|██████████| 4/4 [01:41<00:00, 24.08s/it]Loading checkpoint shards: 100%|██████████| 4/4 [01:41<00:00, 25.36s/it]
-0it [00:00, ?it/s]The following generation flags are not valid and may be ignored: ['temperature', 'top_p']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
-The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
-1it [00:04,  4.98s/it]2it [00:08,  3.90s/it]3it [00:11,  3.59s/it]4it [00:14,  3.37s/it]5it [00:19,  4.10s/it]6it [00:23,  3.85s/it]7it [00:26,  3.56s/it]8it [00:34,  5.19s/it]9it [00:37,  4.55s/it]10it [00:43,  4.78s/it]11it [00:52,  6.23s/it]12it [00:55,  5.27s/it]13it [00:59,  4.68s/it]14it [01:02,  4.21s/it]15it [01:05,  3.84s/it]16it [01:08,  3.60s/it]17it [01:11,  3.42s/it]18it [01:14,  3.28s/it]19it [01:19,  3.87s/it]20it [01:22,  3.64s/it]21it [01:27,  4.13s/it]22it [01:32,  4.43s/it]23it [01:35,  4.00s/it]24it [01:38,  3.70s/it]25it [01:42,  3.62s/it]26it [01:45,  3.44s/it]27it [01:48,  3.33s/it]28it [01:53,  3.82s/it]29it [01:58,  4.15s/it]30it [02:01,  3.88s/it]31it [02:07,  4.43s/it]32it [02:10,  4.11s/it]33it [02:15,  4.34s/it]34it [02:20,  4.54s/it]35it [02:24,  4.20s/it]36it [02:27,  3.91s/it]37it [02:30,  3.67s/it]38it [02:34,  3.67s/it]39it [02:37,  3.47s/it]40it [02:40,  3.52s/it]41it [02:43,  3.44s/it]42it [02:47,  3.43s/it]43it [02:50,  3.35s/it]44it [02:55,  3.94s/it]45it [02:58,  3.64s/it]46it [03:04,  4.22s/it]47it [03:07,  3.88s/it]48it [03:10,  3.70s/it]49it [03:18,  4.89s/it]50it [03:21,  4.39s/it]51it [03:31,  5.92s/it]52it [03:34,  5.22s/it]53it [03:37,  4.65s/it]54it [03:41,  4.17s/it]55it [03:46,  4.50s/it]56it [03:49,  4.03s/it]57it [03:52,  3.76s/it]58it [03:57,  4.25s/it]59it [04:00,  3.91s/it]60it [04:06,  4.28s/it]61it [04:09,  3.90s/it]62it [04:12,  3.66s/it]63it [04:15,  3.45s/it]64it [04:18,  3.34s/it]65it [04:21,  3.24s/it]66it [04:24,  3.16s/it]67it [04:27,  3.27s/it]68it [04:31,  3.30s/it]69it [04:36,  3.96s/it]70it [04:39,  3.71s/it]71it [04:42,  3.52s/it]72it [04:46,  3.52s/it]73it [04:49,  3.56s/it]74it [04:53,  3.51s/it]75it [04:56,  3.40s/it]76it [04:59,  3.39s/it]77it [05:03,  3.40s/it]78it [05:08,  3.86s/it]79it [05:15,  4.87s/it]80it [05:18,  4.30s/it]81it [05:21,  3.95s/it]82it [05:24,  3.74s/it]83it [05:27,  3.51s/it]84it [05:31,  3.53s/it]85it [05:34,  3.53s/it]86it [05:39,  3.98s/it]87it [05:43,  3.83s/it]88it [05:46,  3.68s/it]89it [05:49,  3.46s/it]90it [05:52,  3.33s/it]91it [05:58,  4.18s/it]92it [06:02,  3.89s/it]93it [06:05,  3.83s/it]94it [06:08,  3.59s/it]95it [06:11,  3.42s/it]96it [06:14,  3.33s/it]97it [06:18,  3.31s/it]98it [06:23,  4.01s/it]99it [06:26,  3.72s/it]100it [06:30,  3.62s/it]101it [06:33,  3.48s/it]102it [06:36,  3.37s/it]103it [06:39,  3.29s/it]104it [06:44,  3.86s/it]104it [06:44,  3.89s/it]
-2026-01-15 12:04:21 root INFO: Evaluating ...
-
-
- ========================= Results (SARCP) ================================= 
-
-Mode: cyber
-Refinement: False
-Retrieval" True
-Post-process: True
-Using pipe: False
-Time elapsed: 404.8272864818573s
-
-Precision: 0.7464285714285714
-Recall: 0.6333333333333333
-F1: 0.6852459016393443
-
-Component-wise results: {'subject': {'tp': 79, 'fp': 24, 'fn': 35, 'p': 0.7669902912621359, 'r': 0.6929824561403509, 'f1': 0.7281105990783411}, 'action': {'tp': 97, 'fp': 21, 'fn': 25, 'p': 0.8220338983050848, 'r': 0.7950819672131147, 'f1': 0.8083333333333333}, 'resource': {'tp': 97, 'fp': 40, 'fn': 60, 'p': 0.708029197080292, 'r': 0.6178343949044586, 'f1': 0.6598639455782312}, 'purpose': {'tp': 15, 'fp': 4, 'fn': 13, 'p': 0.7894736842105263, 'r': 0.5357142857142857, 'f1': 0.6382978723404255}, 'condition': {'tp': 18, 'fp': 3, 'fn': 13, 'p': 0.8571428571428571, 'r': 0.5806451612903226, 'f1': 0.6923076923076923}}
-
-
- ========================= Results (ACR Generation) ========================= 
-
-Precision: 0.6715328467153284
-Recall: 0.5859872611464968
-F1: 0.6258503401360545
-
- ============================================================================ 
-
-

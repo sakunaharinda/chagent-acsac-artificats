@@ -62,14 +62,30 @@ research testbeds that offer NVIDIA GPUs, e.g.:
 On any of these, provision a Linux GPU instance, clone the repository, run
 ./install.sh, authenticate with HuggingFace, then follow claims/*/run.sh.
 
-ESTIMATED RUNTIMES (single modern GPU; approximate, hardware-dependent)
------------------------------------------------------------------------
-  - Identification training (per fold):        ~minutes to ~1 hour
-  - Verifier training:                         ~1-3 hours
-  - Generator LoRA fine-tuning (2 epochs):     ~several hours
-  - DSARCP evaluation per fold (with refine):  ~tens of minutes to a few hours,
-                                               depending on fold size and retries
-FILL IN measured runtimes on your hardware here before submission if desired.
+ESTIMATED RUNTIMES (single NVIDIA GPU, authors' setup; hardware-dependent)
+--------------------------------------------------------------------------
+Full DSARCP evaluation (eval_chagent.py --refine), measured mean wall-clock time
+PER SEED, averaged over the available seeds (from claims/claim2_generation/eval_logs):
+
+  dataset     mean time / seed     seeds averaged
+  ---------   ----------------     --------------
+  ibm         ~19 min              3
+  cyber       ~25 min              2
+  collected   ~25 min              3
+  t2p         ~38 min              3
+  overall     ~64 min              2
+  acre        ~118 min             3
+  (mean across all 16 full-pipeline runs: ~49 min/run)
+
+Notes:
+  - Reproducing Claim 2 runs each dataset for 3 seeds, so multiply the per-seed
+    time by ~3 (e.g. acre ~6 h, ibm ~1 h for all three seeds).
+  - Times scale with fold size and with how often refinement retries (up to 3x),
+    which is why acre (largest) dominates. Ablation configs without --refine
+    (Claim 4) are faster: the --no_retrieve runs are the quickest.
+  - Training (not needed to reproduce, since checkpoints are provided): generator
+    LoRA fine-tuning takes a few hours; the BERT identifier and BART verifier are
+    much lighter (minutes to ~1-3 hours).
 
 REPRODUCIBILITY NOTES
 ---------------------

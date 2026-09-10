@@ -15,17 +15,32 @@ Paper Section/Table: <FILL IN — e.g., "Table Y: DSARCP generation results">.
 
 What run.sh does
 ----------------
-For each dataset and each of the THREE seeds, runs
-artifact/generation/evaluation/eval_chagent.py with retrieval + refinement
-enabled (the default CHAGent configuration), using the PROVIDED checkpoints
-(no training). Each run prints its metrics and writes generations under
+Runs artifact/generation/evaluation/eval_chagent.py with retrieval + refinement
+enabled (the default CHAGent configuration), using the PROVIDED checkpoints (no
+training). Each run prints its metrics and writes generations under
 <RESULT_DIR>/<mode>/.
 
+On start, run.sh asks which scope to run:
+  [D] Default    — all datasets, seed 3 only (6 runs, ~5 hours on an A100).
+                   Reproduces the seed-3 point estimates; matches the seed-3
+                   logs in eval_logs/.
+  [E] Everything — all datasets, seeds 2, 3, 4 (18 runs, ~13-15 hours). Needed
+                   only for the full three-seed mean/SD reported in the paper.
+Pressing Enter selects the Default. The prompt is skipped when SEEDS (or
+DATASETS) is preset in the environment, and a non-interactive shell falls back
+to the Default automatically.
+
+Time cost of [E]: the full pipeline averages ~49 min per (dataset, seed),
+ranging from ~19 min (ibm) to ~118 min (acre; ~6 h across three seeds), so the
+whole sweep is ~13-15 h of GPU time. Measured per-dataset/seed times are in
+infrastructure/README.txt.
+
 IMPORTANT — reproduction protocol:
-  * The script is intended to be run 3 times per dataset (once per seed).
-  * MEAN and STANDARD DEVIATION across the three seeds are computed EXTERNALLY
-    (not by this script). Collect the three per-seed F1 values printed by the
-    runs and aggregate them yourself, then compare mean +/- SD to the paper.
+  * The Default scope reproduces the single-seed (seed 3) results directly.
+  * For the paper's multi-seed numbers, run scope [E]; MEAN and STANDARD
+    DEVIATION across the three seeds are computed EXTERNALLY (not by this
+    script). Collect the per-seed F1 values printed by the runs and aggregate
+    them yourself, then compare mean +/- SD to the paper.
 
 Metrics reported (per dataset, per seed)
 ----------------------------------------
@@ -46,4 +61,5 @@ Prerequisites
 Seeds
 -----
 The three seeds are 2, 3, 4 (matching the checkpoint directories on the Hub).
-Override via the SEEDS/DATASETS variables at the top of run.sh if needed.
+The Default scope runs seed 3 only; scope [E] runs all three. To target specific
+cells, preset the environment, e.g.  DATASETS=ibm SEEDS=3 ./run.sh
