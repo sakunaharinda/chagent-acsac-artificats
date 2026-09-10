@@ -46,8 +46,8 @@ ID_DL="$REPO_ROOT/artifact/identification/checkpoints_hf"
 # ---------------------------------------------------------------------------
 # Locate the HuggingFace download CLI
 # ---------------------------------------------------------------------------
-if command -v huggingface-cli >/dev/null 2>&1; then
-    HF_DL=(huggingface-cli download)
+if command -v hf >/dev/null 2>&1; then
+    HF_DL=(hf download)
 elif command -v hf >/dev/null 2>&1; then
     HF_DL=(hf download)
 else

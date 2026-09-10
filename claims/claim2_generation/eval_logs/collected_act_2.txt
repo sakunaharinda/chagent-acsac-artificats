@@ -1,0 +1,36 @@
+/data/sjay950/research/CHAGent-old/generation/evaluation/utils.py:383: LangChainDeprecationWarning: The class `HuggingFaceEmbeddings` was deprecated in LangChain 0.2.2 and will be removed in 1.0. An updated version of the class exists in the :class:`~langchain-huggingface package and should be used instead. To use it run `pip install -U :class:`~langchain-huggingface` and import as `from :class:`~langchain_huggingface import HuggingFaceEmbeddings``.
+  embeddings = HuggingFaceEmbeddings(
+Loading checkpoint shards:   0%|          | 0/4 [00:00<?, ?it/s]Loading checkpoint shards:  25%|██▌       | 1/4 [00:18<00:55, 18.44s/it]Loading checkpoint shards:  50%|█████     | 2/4 [00:59<01:03, 31.52s/it]Loading checkpoint shards:  75%|███████▌  | 3/4 [01:38<00:35, 35.09s/it]Loading checkpoint shards: 100%|██████████| 4/4 [01:46<00:00, 24.60s/it]Loading checkpoint shards: 100%|██████████| 4/4 [01:46<00:00, 26.74s/it]
+You passed `num_labels=3` which is incompatible to the `id2label` map of length `12`.
+0it [00:00, ?it/s]The following generation flags are not valid and may be ignored: ['temperature', 'top_p']. Set `TRANSFORMERS_VERBOSITY=info` for more details.
+The attention mask is not set and cannot be inferred from input because pad token is same as eos token. As a consequence, you may observe unexpected behavior. Please pass your input's `attention_mask` to obtain reliable results.
+1it [00:15, 15.59s/it]2it [02:52, 98.45s/it]3it [02:55, 55.09s/it]4it [05:47, 101.22s/it]5it [05:52, 66.68s/it] 6it [05:56, 45.10s/it]7it [05:59, 31.56s/it]8it [06:08, 24.20s/it]9it [06:11, 17.76s/it]10it [07:37, 38.71s/it]11it [07:40, 27.81s/it]12it [07:54, 23.68s/it]13it [08:00, 18.12s/it]14it [08:03, 13.61s/it]15it [08:17, 13.74s/it]16it [08:20, 10.53s/it]17it [09:25, 27.02s/it]18it [10:01, 29.66s/it]19it [10:44, 33.56s/it]20it [10:47, 24.41s/it]21it [10:50, 18.07s/it]22it [10:53, 13.57s/it]23it [10:58, 11.01s/it]24it [11:01,  8.61s/it]25it [11:04,  6.93s/it]26it [11:09,  6.16s/it]27it [12:11, 23.01s/it]28it [12:18, 18.23s/it]29it [12:32, 16.98s/it]30it [12:35, 12.86s/it]31it [12:50, 13.42s/it]32it [13:05, 13.83s/it]33it [13:14, 12.57s/it]34it [13:22, 10.99s/it]35it [13:25,  8.59s/it]36it [14:07, 18.68s/it]37it [14:10, 14.06s/it]38it [14:15, 11.41s/it]39it [14:18,  8.88s/it]40it [14:24,  7.84s/it]41it [14:29,  7.09s/it]42it [15:08, 16.53s/it]43it [16:16, 31.96s/it]44it [16:19, 23.47s/it]45it [16:22, 17.35s/it]46it [16:37, 16.38s/it]47it [16:42, 13.06s/it]48it [16:46, 10.31s/it]49it [16:51,  8.73s/it]50it [17:05, 10.39s/it]51it [17:20, 11.86s/it]52it [17:39, 14.00s/it]53it [17:43, 10.79s/it]54it [17:46,  8.50s/it]55it [17:49,  6.89s/it]56it [17:56,  6.91s/it]57it [18:01,  6.42s/it]58it [18:04,  5.40s/it]59it [18:07,  4.72s/it]60it [18:11,  4.25s/it]61it [18:14,  3.99s/it]62it [18:32,  8.12s/it]63it [18:35,  6.58s/it]64it [19:00, 12.28s/it]65it [19:03,  9.56s/it]66it [19:06,  7.60s/it]67it [19:10,  6.24s/it]68it [19:12,  5.26s/it]69it [19:15,  4.57s/it]70it [19:33,  8.42s/it]71it [19:38,  7.48s/it]72it [19:41,  6.20s/it]73it [19:44,  5.28s/it]74it [19:48,  4.70s/it]75it [19:51,  4.35s/it]76it [19:54,  3.98s/it]77it [22:18, 45.71s/it]78it [22:21, 32.98s/it]79it [22:26, 24.56s/it]80it [22:52, 24.93s/it]81it [22:57, 18.97s/it]82it [23:00, 14.22s/it]83it [23:03, 10.84s/it]84it [23:06,  8.55s/it]85it [23:09,  7.02s/it]86it [23:15,  6.46s/it]87it [23:18,  5.60s/it]88it [23:33,  8.35s/it]89it [23:36,  6.80s/it]90it [23:41,  6.27s/it]91it [24:22, 16.69s/it]92it [24:25, 12.63s/it]93it [24:30, 10.39s/it]94it [24:36,  8.81s/it]95it [24:41,  7.76s/it]96it [24:44,  6.33s/it]97it [24:51,  6.56s/it]98it [25:10, 10.37s/it]99it [25:14,  8.36s/it]100it [25:17,  6.77s/it]101it [25:20,  5.74s/it]102it [25:39,  9.52s/it]103it [25:44,  8.29s/it]104it [26:01, 10.85s/it]105it [26:06,  9.12s/it]106it [26:11,  7.85s/it]107it [26:14,  6.43s/it]108it [26:19,  6.00s/it]109it [26:22,  5.22s/it]110it [26:57, 14.15s/it]111it [27:00, 10.79s/it]112it [27:14, 11.70s/it]112it [27:14, 14.59s/it]
+2026-09-09 11:59:53 root INFO: Evaluating ...
+Fail count: 1
+
+
+ ========================= Results (SARCP) ================================= 
+
+Mode: collected
+Refinement: True
+Retrieval" True
+Post-process: True
+Using pipe: False
+Time elapsed: 1634.6068477630615s
+
+Precision: 0.8758314855875832
+Recall: 0.8212058212058212
+F1: 0.8476394849785408
+
+Component-wise results: {'subject': {'tp': 173, 'fp': 16, 'fn': 32, 'p': 0.9153439153439153, 'r': 0.8439024390243902, 'f1': 0.8781725888324873}, 'action': {'tp': 133, 'fp': 8, 'fn': 7, 'p': 0.9432624113475178, 'r': 0.95, 'f1': 0.9466192170818505}, 'resource': {'tp': 167, 'fp': 29, 'fn': 40, 'p': 0.8520408163265306, 'r': 0.8067632850241546, 'f1': 0.8287841191066998}, 'purpose': {'tp': 27, 'fp': 4, 'fn': 13, 'p': 0.8709677419354839, 'r': 0.675, 'f1': 0.7605633802816901}, 'condition': {'tp': 28, 'fp': 7, 'fn': 1, 'p': 0.8, 'r': 0.9655172413793104, 'f1': 0.8750000000000001}}
+
+
+ ========================= Results (ACR Generation) ========================= 
+
+Precision: 0.8080808080808081
+Recall: 0.7655502392344498
+F1: 0.7862407862407863
+
+ ============================================================================ 
+
+
