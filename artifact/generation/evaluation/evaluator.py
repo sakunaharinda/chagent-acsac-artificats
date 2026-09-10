@@ -166,7 +166,7 @@ class AccessEvaluator():
         
         return longest_substring, longest_substring_start_index, longest_substring_end_index
     
-    def do_overlap(self, x, y, thresh = 0.5):
+    def do_overlap(self, x, y, thresh = 0.2):
         
         
         overlap, start, end = self.longest_common_substring(x, y)
@@ -248,8 +248,8 @@ class AccessEvaluator():
                     
                         
                     if (true not in exact_match) and (true not in true_which_overlapped_with_pred) and (self.do_overlap(d_true, d_pred,1) and self.do_overlap(s_true, s_pred,1) and self.do_overlap(a_true, a_pred,1) and
-                    self.do_overlap(r_true, r_pred, 1) and self.do_overlap(p_true, p_pred, 0.2) and
-                    self.do_overlap(c_true, c_pred, 0.2)):
+                    self.do_overlap(r_true, r_pred, 1) and self.do_overlap(p_true, p_pred) and
+                    self.do_overlap(c_true, c_pred)):
                             
                         true_which_overlapped_with_pred.append(true)
                             
