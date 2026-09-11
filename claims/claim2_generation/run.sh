@@ -31,7 +31,7 @@ elif [ -t 0 ]; then
                    Reproduces the seed-3 point estimates; matches the seed-3
                    logs in eval_logs/.
 
-  [E] Everything : all datasets, seeds 2, 3, 4 (18 runs, ~13-15 hours)
+  [E] Everything : all datasets, seeds 2, 3, 4 (18 runs, ~20 hours)
                    Needed only for the full three-seed mean/SD reported in the
                    paper (mean/SD are aggregated externally).
 

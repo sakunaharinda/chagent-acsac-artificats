@@ -1,4 +1,6 @@
 import os
+
+os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 os.environ['TOKENIZERS_PARALLELISM'] = 'false'
 
 import click
@@ -37,28 +39,35 @@ def evaluate(loader, model, device):
               required=True,
               type=click.Choice(['t2p', 'acre', 'ibm', 'collected', 'cyber', 'overall'], case_sensitive=False)
               )
-def main(mode):
+@click.option('--batch_size', default=16, help='Batch size', show_default=True)
+@click.option('--device', default='cuda:0', help='GPU/CPU', show_default=True)
+@click.option('--seed', default=0, help='Seed', required=True)
+def main(mode, batch_size = 16, device = 'cuda:0', seed=0):
     
     """ Evaluates the NLACP identification module."""
     
     NUM_CLASSES = 2
     
-    test_path = f'../data/document_folds/{mode}.csv'
+    if mode=='overall':
+        test_path = f'../data/overall/test.csv'
         
-    checkpoint = f'../checkpoints/id/{mode}/checkpoint'
+    else:
+        test_path = f'../data/document_folds/{mode}.csv'
+        
+    checkpoint = f'checkpoints/id/{mode}_{seed}/checkpoint'
 
-    model = BertForSequenceClassification.from_pretrained(checkpoint, num_labels=NUM_CLASSES).to('cuda:0')
+    model = BertForSequenceClassification.from_pretrained(checkpoint, num_labels=NUM_CLASSES).to(device)
     tokenizer = BertTokenizerFast.from_pretrained(checkpoint)
 
     
     test_df = pd.read_csv(test_path)
     test_ds = ACPDataset(test_df, tokenizer)
-    test_dataloader = DataLoader(test_ds, num_workers=1, batch_size=16)
+    test_dataloader = DataLoader(test_ds, num_workers=1, batch_size=batch_size)
     
     print('\n =============================== Evaluating ================================ \n')
     
     
-    results = evaluate(test_dataloader, model, 'cuda:0')
+    results = evaluate(test_dataloader, model, device)
     
     print(f'Test path: {test_path}\n')
     print(results)
@@ -68,5 +77,3 @@ def main(mode):
     
 if __name__ == '__main__':
     main()
-    
-    
