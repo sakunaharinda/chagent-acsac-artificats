@@ -25,12 +25,31 @@ set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$HERE"
 
-PYTHON_BIN="${PYTHON_BIN:-python3}"
+# Pick an interpreter. Honor PYTHON_BIN if set; otherwise prefer a newer
+# python3.x that is >= 3.9 AND has the _ctypes module (skips ancient system
+# python3 like 3.6, and pyenv builds missing libffi). Note: this only sees
+# interpreters on the SCRIPT's PATH — if your Python 3.12 is exposed via a
+# shell alias/function or an un-exported pyenv shim, pass it explicitly, e.g.
+#   PYTHON_BIN="$(which python3)" ./install.sh
+if [ -z "${PYTHON_BIN:-}" ]; then
+    for _cand in python3.12 python3.11 python3.10 python3.9 python3 python; do
+        if command -v "$_cand" >/dev/null 2>&1 \
+           && "$_cand" -c 'import sys,ctypes; sys.exit(0 if sys.version_info[:2]>=(3,9) else 1)' >/dev/null 2>&1; then
+            PYTHON_BIN="$_cand"; break
+        fi
+    done
+fi
+if [ -z "${PYTHON_BIN:-}" ]; then
+    echo "ERROR: no suitable Python found (need >= 3.9 with the _ctypes module)."
+    echo "       Tried python3.12 ... python3. Activate/point to Python 3.12"
+    echo "       (tested 3.12.13), e.g.  PYTHON_BIN=\"\$(which python3)\" ./install.sh"
+    exit 1
+fi
 
 echo "=========================================================="
 echo " CHAGent artifact installer"
 echo " Working directory : $HERE"
-echo " Python            : $($PYTHON_BIN --version 2>&1)"
+echo " Python            : $($PYTHON_BIN --version 2>&1)  ($(command -v "$PYTHON_BIN"))"
 echo "=========================================================="
 
 # ---------------------------------------------------------------------------
