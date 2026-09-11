@@ -10,11 +10,11 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 cd "$REPO_ROOT/artifact/validation"
 
-CKPT="../checkpoints/verification/checkpoint"
+CKPT="checkpoints/verification/checkpoint"
 if [ ! -d "$CKPT" ]; then
-    echo "ERROR: verifier checkpoint not found at artifact/checkpoints/verification/checkpoint"
+    echo "ERROR: verifier checkpoint not found at artifact/validation/checkpoints/verification/checkpoint"
     echo "       Place the seed-2 BART verifier checkpoint there. To (re)train:"
-    echo "         python train_test_verifier_single_split.py --dataset_path=../data/verification --seed=2 --out_dir=../checkpoints/verification"
+    echo "         python train_test_verifier_single_split.py --dataset_path=../data/verification --seed=2 --out_dir=checkpoints/verification"
     echo "       then ensure the produced checkpoint-XXXX dir is reachable as 'checkpoint'."
     exit 1
 fi

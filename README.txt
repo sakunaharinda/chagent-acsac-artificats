@@ -123,6 +123,9 @@ The evaluation scripts load checkpoints from fixed relative paths:
   - Identification eval expects:  ../checkpoints/id/<mode>/checkpoint
   - Generation eval expects:      ../checkpoints/<mode>_act_<seed>/checkpoint   (LoRA adapter)
   - Verifier used by generation:  ../checkpoints/verification/checkpoint
+        (i.e. artifact/generation/checkpoints/verification/checkpoint)
+  - Verifier eval (Claim 3) expects: checkpoints/verification/checkpoint
+        (i.e. artifact/validation/checkpoints/verification/checkpoint)
 Trainers save into <out_dir> with an inner checkpoint-XXXX directory (and the
 identification trainer appends _<seed> to out_dir). After training, make sure
 the produced checkpoint directory is reachable at the exact path the evaluator
@@ -140,9 +143,9 @@ Each claim has a self-contained runner that EVALUATES PROVIDED CHECKPOINTS
 Checkpoints (run ./download_checkpoints.sh first — see above):
   - Generation: complete set — every dataset x seeds {2,3,4}
       (artifact/generation/checkpoints/<mode>_act_<seed>/checkpoint)
-  - Validation/verifier: the seed-2 checkpoint, placed for both claims at
-      artifact/checkpoints/verification/checkpoint            (Claim 3) and
-      artifact/generation/checkpoints/verification/checkpoint (Claims 2 & 4)
+  - Validation/verifier: the seed-2 checkpoint, placed at
+      artifact/validation/checkpoints/verification/checkpoint   (Claim 3) and
+      artifact/generation/checkpoints/verification/checkpoint   (Claims 2 & 4)
   - Identification: single seed per dataset, from the chagent-identification
       repo, linked to artifact/checkpoints/id/<mode>/checkpoint
       (train locally if the repo is unavailable)

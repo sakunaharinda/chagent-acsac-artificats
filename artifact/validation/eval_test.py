@@ -66,7 +66,7 @@ def main():
 
     df = pd.read_csv('../data/verification/utest.csv')
     
-    eval_ckpt(df, "../checkpoints/verification/checkpoint")
+    eval_ckpt(df, "checkpoints/verification/checkpoint")
     
     
 if __name__ == '__main__':

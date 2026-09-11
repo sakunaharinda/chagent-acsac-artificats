@@ -110,12 +110,12 @@ fi
 
 # ---------------------------------------------------------------------------
 # 3. Verifier for the validation claim (eval_test.py expects, relative to
-#    artifact/validation/):  ../checkpoints/verification/checkpoint
-#    i.e. artifact/checkpoints/verification/checkpoint  ->  <VER_DL>/2/checkpoint
+#    artifact/validation/):  checkpoints/verification/checkpoint
+#    i.e. artifact/validation/checkpoints/verification/checkpoint  ->  <VER_DL>/2/checkpoint
 # ---------------------------------------------------------------------------
-mkdir -p "$REPO_ROOT/artifact/checkpoints"
+mkdir -p "$REPO_ROOT/artifact/validation/checkpoints"
 if [ -d "$VER_DL/2/checkpoint" ]; then
-    ln -sfn "$VER_DL/2" "$REPO_ROOT/artifact/checkpoints/verification"
+    ln -sfn "$VER_DL/2" "$REPO_ROOT/artifact/validation/checkpoints/verification"
     echo "  linked validation verifier -> $VER_DL/2"
 fi
 
@@ -132,18 +132,18 @@ ID_SRC_ROOT="$ID_DL"
 ID_DEST="$REPO_ROOT/artifact/checkpoints/id"
 if [ "$ID_OK" = "1" ] && [ -d "$ID_SRC_ROOT" ]; then
     for d in $DATASETS; do
-        ckpt=""
-        # the checkpoint dir is the one containing config.json:
-        #   <ID_DL>/<d>/<seed>/config.json   (or, as a fallback, <ID_DL>/<d>/config.json)
-        for cand in "$ID_SRC_ROOT/$d"/*/ "$ID_SRC_ROOT/$d"/; do
-            if [ -f "${cand}config.json" ]; then ckpt="${cand%/}"; break; fi
-        done
-        if [ -n "$ckpt" ]; then
+        # The checkpoint dir is whichever directory holds config.json, at any
+        # depth under <ID_DL>/<d> (e.g. <d>/config.json or <d>/<seed>/config.json).
+        cfg="$(find "$ID_SRC_ROOT/$d" -name config.json -print -quit 2>/dev/null || true)"
+        if [ -n "$cfg" ]; then
+            ckpt="$(dirname "$cfg")"
             mkdir -p "$ID_DEST/$d"
             ln -sfn "$ckpt" "$ID_DEST/$d/checkpoint"
             echo "  linked id/$d/checkpoint -> $ckpt"
         else
-            echo "  NOTE: no identification checkpoint (config.json) found for $d under $ID_SRC_ROOT/$d (skipped)"
+            echo "  NOTE: no config.json found under $ID_SRC_ROOT/$d — contents:"
+            find "$ID_SRC_ROOT/$d" -maxdepth 2 2>/dev/null | sed 's/^/        /' \
+                || echo "        (directory missing — download may have failed)"
         fi
     done
 else
@@ -156,7 +156,7 @@ echo "=========================================================="
 echo " Checkpoints ready:"
 echo "   Generators  : artifact/generation/checkpoints/<dataset>_act_<seed>/checkpoint"
 echo "   Gen verifier: artifact/generation/checkpoints/verification/checkpoint"
-echo "   Val verifier: artifact/checkpoints/verification/checkpoint"
+echo "   Val verifier: artifact/validation/checkpoints/verification/checkpoint"
 echo "   Identifier  : artifact/checkpoints/id/<dataset>/checkpoint (seed 0, per fold)"
 echo
 echo " If identification checkpoints were not linked above, the download failed"

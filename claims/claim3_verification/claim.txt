@@ -40,8 +40,9 @@ Prerequisites
 -------------
 - venv active (../install.sh); HuggingFace access configured (facebook/bart-large).
 - Verifier checkpoint present at:
-      artifact/checkpoints/verification/checkpoint
-  (eval_test.py resolves this path relative to artifact/validation/.)
+      artifact/validation/checkpoints/verification/checkpoint
+  (eval_test.py loads checkpoints/verification/checkpoint relative to
+  artifact/validation/.)
   This is the seed-2 checkpoint. ../download_checkpoints.sh fetches it from
   https://huggingface.co/chagent-artifacts/chagent-verification (the "2/checkpoint"
   directory) and symlinks it to the path above.
