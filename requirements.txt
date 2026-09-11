@@ -1,6 +1,6 @@
 # CHAGent (ACSAC'26, paper 186) — Python dependencies
 #
-# Tested with Python 3.10. A CUDA-capable GPU is required to train/run the
+# Tested with Python 3.12.13. A CUDA-capable GPU is required to train/run the
 # LLaMa-3-8B generator and the BART verifier.
 #
 # NOTE:

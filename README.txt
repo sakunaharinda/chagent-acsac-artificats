@@ -49,7 +49,7 @@ REQUIREMENTS
 ------------
 See infrastructure/README.txt for full details. In short:
   - Linux with an NVIDIA CUDA GPU (>= 24 GB VRAM recommended for LLaMa-3-8B).
-  - Python 3.10.
+  - Python 3.12 (tested with 3.12.13).
   - A HuggingFace account with access to the gated model
     meta-llama/Meta-Llama-3-8B-Instruct.
 

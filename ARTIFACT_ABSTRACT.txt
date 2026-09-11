@@ -22,6 +22,6 @@ REQUIREMENTS
 ------------
   - OS: Linux.
   - Hardware: one NVIDIA CUDA GPU, preferrably A100 (>= 24 GB VRAM recommended for the 8B generator; BERT/BART fit in <= 16 GB). ~60 GB free disk recommended.
-  - Python 3.10, with dependencies pinned in requirements.txt (PyTorch, Transformers, PEFT, TRL, Accelerate, bitsandbytes, LangChain + FAISS, sentence-transformers, scikit-learn, evaluate). install.sh sets up a virtual environment and installs everything; flash-attn is optional.
+  - Python 3.12 (tested with 3.12.13), with dependencies pinned in requirements.txt (PyTorch, Transformers, PEFT, TRL, Accelerate, bitsandbytes, LangChain + FAISS, sentence-transformers, scikit-learn, evaluate). install.sh sets up a virtual environment and installs everything; flash-attn is optional.
   - A HuggingFace account with accepted access to the gated model meta-llama/Meta-Llama-3-8B-Instruct (token or `huggingface-cli login`). Base models download automatically on first run.
 

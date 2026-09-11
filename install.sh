@@ -13,7 +13,8 @@
 # CUDA runtime (and macOS gets the native build) — no --index-url needed.
 #
 # Requirements assumed to be present on the host:
-#   * Python 3.10 (python3.10 or python3 >= 3.9)
+#   * Python 3.12 (tested with 3.12.13). Select a specific interpreter with
+#     PYTHON_BIN, e.g.  PYTHON_BIN=python3.12 ./install.sh
 #   * A CUDA-capable GPU + driver for training/inference (see infrastructure/)
 #   * A HuggingFace account with access to meta-llama/Meta-Llama-3-8B-Instruct
 #     (the generator base model is gated). Run `huggingface-cli login` or export
@@ -47,6 +48,25 @@ if [ "${NO_VENV:-0}" != "1" ]; then
     PYTHON_BIN="python"
 else
     echo "[1/5] NO_VENV=1 set — installing into current environment."
+fi
+
+# ---------------------------------------------------------------------------
+# 1b. Sanity check: the interpreter must provide the _ctypes stdlib module.
+#     pyenv builds Python WITHOUT it when libffi headers are missing at build
+#     time, which then breaks pip/torch/huggingface_hub with a cryptic
+#     "ModuleNotFoundError: No module named '_ctypes'". Fail early and clearly.
+# ---------------------------------------------------------------------------
+if ! "$PYTHON_BIN" -c "import ctypes" >/dev/null 2>&1; then
+    echo
+    echo "ERROR: this Python lacks the _ctypes module (built without libffi)."
+    echo "       $("$PYTHON_BIN" -c 'import sys; print(sys.executable)' 2>/dev/null) cannot run torch/huggingface."
+    echo "       Use a Python where  python -c 'import ctypes'  works, e.g. (no sudo):"
+    echo "         conda create -y -n chagent python=3.12 && conda activate chagent"
+    echo "         rm -rf .venv && PYTHON_BIN=\"\$(command -v python)\" ./install.sh"
+    echo "       or 'uv python install 3.12' (its builds include _ctypes),"
+    echo "       or module-load a system Python. With sudo: apt-get install -y libffi-dev"
+    echo "       then rebuild the interpreter (e.g. pyenv install --force <version>)."
+    exit 1
 fi
 
 # ---------------------------------------------------------------------------

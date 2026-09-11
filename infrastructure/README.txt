@@ -19,7 +19,8 @@ HARDWARE
 SOFTWARE
 --------
   - OS: Linux (Ubuntu 20.04/22.04 tested class of environment).
-  - Python: 3.10.
+  - Python: 3.12 (tested with 3.12.13). The interpreter must include the
+    _ctypes stdlib module (pyenv builds without libffi omit it and will fail).
   - NVIDIA driver + CUDA runtime compatible with the installed torch wheel
     (default install.sh targets CUDA 12.1; override with TORCH_CUDA=cuXXX).
   - nvcc / CUDA toolkit is required ONLY to build flash-attn (optional; used by
