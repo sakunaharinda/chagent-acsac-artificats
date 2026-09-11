@@ -1,8 +1,14 @@
 Expected output — Claim 1 (NLACP identification)
 ================================================
 
-evaluate_classification.py prints, for EACH fold, a block of this form:
+Reference logs
+--------------
+The exact stdout for each fold's evaluation (seed 0) is included under:
+    claims/claim1_identification/eval_logs/<fold>_0.txt
+A new run of run.sh should match the metric dict in the corresponding log.
 
+Output format (what evaluate_classification.py prints)
+------------------------------------------------------
  =============================== Evaluating ================================
 
 Test path: ../data/document_folds/<fold>.csv
@@ -11,17 +17,19 @@ Test path: ../data/document_folds/<fold>.csv
 
  ===========================================================================
 
-The four numbers are floats in [0, 1].
+Reference values (seed 0, from the included logs)
+--------------------------------------------------
+  fold        accuracy   precision   recall    F1
+  ---------   --------   ---------   ------    ------
+  t2p         0.9332     0.9646      0.9589    0.9618
+  acre        0.8559     0.8610      0.9606    0.9081
+  ibm         0.8000     0.7846      0.8947    0.8361
+  collected   0.8929     0.9008      0.9732    0.9356
+  cyber       0.8095     0.8019      0.8173    0.8095
+  overall     0.9325     0.9014      0.9925    0.9447
 
-Reference values from the paper (FILL IN from the identification results table):
-
-  fold        accuracy   precision   recall   F1
-  --------    --------   ---------   ------   ----
-  t2p         <...>      <...>       <...>    <...>
-  acre        <...>      <...>       <...>    <...>
-  ibm         <...>      <...>       <...>    <...>
-  collected   <...>      <...>       <...>    <...>
-  cyber       <...>      <...>       <...>    <...>
-  overall     <...>      <...>       <...>    <...>
-
-A successful reproduction matches these within small run-to-run variation.
+Interpretation
+--------------
+A single seed (0) is published per fold; the paper's mean/SD (if reported over
+multiple seeds) is aggregated externally after training additional seeds — see
+the Reproducibility note in claim.txt.

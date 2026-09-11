@@ -9,11 +9,11 @@
 #         layout: <dataset>_act/<seed>/checkpoint/  and  verification/checkpoint/
 #     - chagent-artifacts/chagent-verification    (seed-2 BART verifier),  ~4.9 GB
 #         layout: 2/checkpoint/
-#     - chagent-artifacts/chagent-identification  (identifiers, single seed)
-#         layout: not confirmed here; step 4 probes plausible layouts. May be
-#         private/gated (download is non-fatal).
+#     - chagent-artifacts/chagent-identification  (identifiers, seed 0, per fold)
+#         layout: <dataset>/<seed>/<model files>  (the seed folder is the checkpoint)
 #
-# Datasets: t2p acre ibm collected cyber overall     Seeds: 2 3 4
+# Datasets: t2p acre ibm collected cyber overall
+# Seeds: generators 2/3/4 (SEEDS var, arranged below); verifier 2; identifier 0.
 #
 # NOTE on the path mismatch: eval_chagent.py loads generators from the FLAT path
 #   ../checkpoints/<dataset>_act_<seed>/checkpoint
@@ -21,11 +21,11 @@
 # creates symlinks so the flat path resolves to the downloaded nested directory.
 #
 # NOTE on identification: identification checkpoints live in their own repo
-# (chagent-identification), typically a single seed. This script downloads it
-# (non-fatal) and auto-links to
+# (chagent-identification), seed 0 per fold. This script downloads it (non-fatal)
+# and auto-links each fold to
 #   artifact/checkpoints/id/<dataset>/checkpoint   (the path eval expects; no seed)
-# If the repo is private/gated/unpublished, train locally (fast — bert-base-uncased)
-# via claims/claim1_identification/run.sh.
+# If the download is unavailable, train locally (fast — bert-base-uncased) via
+# claims/claim1_identification/run.sh.
 #
 set -euo pipefail
 
@@ -47,11 +47,11 @@ ID_DL="$REPO_ROOT/artifact/identification/checkpoints_hf"
 # Locate the HuggingFace download CLI
 # ---------------------------------------------------------------------------
 if command -v hf >/dev/null 2>&1; then
-    HF_DL=(hf download)
-elif command -v hf >/dev/null 2>&1; then
-    HF_DL=(hf download)
+    HF_DL=(hf download)                       # newer huggingface_hub CLI
+elif command -v huggingface-cli >/dev/null 2>&1; then
+    HF_DL=(huggingface-cli download)          # older CLI (still works)
 else
-    echo "ERROR: neither 'huggingface-cli' nor 'hf' found on PATH."
+    echo "ERROR: neither 'hf' nor 'huggingface-cli' found on PATH."
     echo "       Activate the venv (source .venv/bin/activate) or: pip install -U huggingface_hub"
     exit 1
 fi
@@ -120,30 +120,30 @@ if [ -d "$VER_DL/2/checkpoint" ]; then
 fi
 
 # ---------------------------------------------------------------------------
-# 4. Identification checkpoints (separate repo: chagent-identification;
-#    typically a single seed). evaluate_classification.py expects, relative to
-#    artifact/identification/:  ../checkpoints/id/<dataset>/checkpoint
-#    i.e. artifact/checkpoints/id/<dataset>/checkpoint  (NO seed level).
-#    The exact inner naming/seed is not confirmed here (repo was not publicly
-#    readable at authoring time), so we search a few plausible layouts under
-#    $ID_DL and link the first <...>/checkpoint found for each dataset.
+# 4. Identification checkpoints (separate repo: chagent-identification).
+#    Hub layout:  <dataset>/<seed>/<model files>   (seed 0; the seed folder IS
+#    the checkpoint — it holds config.json/model.safetensors/... directly,
+#    there is no inner "checkpoint" dir).
+#    evaluate_classification.py expects, relative to artifact/identification/:
+#        ../checkpoints/id/<dataset>/checkpoint
+#    so we link  artifact/checkpoints/id/<dataset>/checkpoint -> <ID_DL>/<dataset>/<seed>.
 # ---------------------------------------------------------------------------
 ID_SRC_ROOT="$ID_DL"
 ID_DEST="$REPO_ROOT/artifact/checkpoints/id"
 if [ "$ID_OK" = "1" ] && [ -d "$ID_SRC_ROOT" ]; then
-    mkdir -p "$ID_DEST"
     for d in $DATASETS; do
-        found=""
-        # try: <d>_act/<seed>/checkpoint, <d>_act/checkpoint, <d>/<seed>/checkpoint, <d>/checkpoint
-        for cand in "$ID_SRC_ROOT/${d}_act"/*/checkpoint "$ID_SRC_ROOT/${d}_act/checkpoint" \
-                    "$ID_SRC_ROOT/${d}"/*/checkpoint     "$ID_SRC_ROOT/${d}/checkpoint"; do
-            if [ -d "$cand" ]; then found="$cand"; break; fi
+        ckpt=""
+        # the checkpoint dir is the one containing config.json:
+        #   <ID_DL>/<d>/<seed>/config.json   (or, as a fallback, <ID_DL>/<d>/config.json)
+        for cand in "$ID_SRC_ROOT/$d"/*/ "$ID_SRC_ROOT/$d"/; do
+            if [ -f "${cand}config.json" ]; then ckpt="${cand%/}"; break; fi
         done
-        if [ -n "$found" ]; then
-            ln -sfn "$(dirname "$found")" "$ID_DEST/${d}"
-            echo "  linked id/${d} -> $(dirname "$found")"
+        if [ -n "$ckpt" ]; then
+            mkdir -p "$ID_DEST/$d"
+            ln -sfn "$ckpt" "$ID_DEST/$d/checkpoint"
+            echo "  linked id/$d/checkpoint -> $ckpt"
         else
-            echo "  NOTE: no identification checkpoint found for ${d} under $ID_SRC_ROOT (skipped)"
+            echo "  NOTE: no identification checkpoint (config.json) found for $d under $ID_SRC_ROOT/$d (skipped)"
         fi
     done
 else
@@ -157,10 +157,9 @@ echo " Checkpoints ready:"
 echo "   Generators  : artifact/generation/checkpoints/<dataset>_act_<seed>/checkpoint"
 echo "   Gen verifier: artifact/generation/checkpoints/verification/checkpoint"
 echo "   Val verifier: artifact/checkpoints/verification/checkpoint"
-echo "   Identifier  : artifact/checkpoints/id/<dataset>/checkpoint (if published)"
+echo "   Identifier  : artifact/checkpoints/id/<dataset>/checkpoint (seed 0, per fold)"
 echo
-echo " If identification checkpoints were not linked above, the chagent-identification"
-echo " repo was unreadable (private/gated — set HF_TOKEN) or its inner folder naming"
-echo " differs from the layouts probed in step 4 — adjust the 'cand' patterns there,"
-echo " or train locally via claims/claim1_identification/run.sh."
+echo " If identification checkpoints were not linked above, the download failed"
+echo " (network/rate limit — set HF_TOKEN and re-run) or a fold's config.json was"
+echo " not found — train locally via claims/claim1_identification/run.sh instead."
 echo "=========================================================="
