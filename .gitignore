@@ -9,13 +9,8 @@ CLAUDE.md
 
 # CHAGent: large model checkpoints downloaded by download_checkpoints.sh
 # (and produced by training) + evaluation result dirs — never commit these.
+# `checkpoints/` matches artifact/{generation,identification,validation}/checkpoints/.
 checkpoints/
-checkpoints_hf/
-artifact/checkpoints/
-artifact/checkpoints_hf/
-artifact/generation/checkpoints/
-artifact/generation/checkpoints_hf/
-artifact/identification/checkpoints_hf/
 artifact/**/results/
 
 # C extensions

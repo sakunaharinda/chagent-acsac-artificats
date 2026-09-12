@@ -45,7 +45,7 @@ Prerequisites
   artifact/validation/.)
   This is the seed-2 checkpoint. ../download_checkpoints.sh fetches it from
   https://huggingface.co/chagent-artifacts/chagent-verification (the "2/checkpoint"
-  directory) and symlinks it to the path above.
+  directory) and renames "2" -> "verification" so it lands at the path above.
 
 Note: eval_test.py has no command-line arguments; the test-set path and the
 checkpoint path are fixed inside the script.

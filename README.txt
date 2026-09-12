@@ -87,31 +87,34 @@ Fetch and arrange them into the exact paths the scripts expect with:
 
     ./download_checkpoints.sh
 
-It symlinks the Hub's nested <dataset>_act/<seed>/checkpoint layout into the
-flat <dataset>_act_<seed>/checkpoint layout eval_chagent.py uses, places the
-verifier for both the generation and validation claims, and links the
-identification checkpoints to artifact/checkpoints/id/<dataset>/checkpoint. The
-identification download is non-fatal; if it is unavailable, train those quickly
-(see claims/claim1_identification).
+It downloads each repo into that module's own checkpoints/ folder and renames
+the Hub's nested <name>/<seed> dirs to the flat <name>_<seed> layout the eval
+scripts use (no symlinks, no staging dirs):
+    artifact/generation/checkpoints/<mode>_act_<seed>/checkpoint  (+ verification/checkpoint)
+    artifact/identification/checkpoints/<mode>_<seed>/checkpoint
+    artifact/validation/checkpoints/verification/checkpoint
+A ".arranged" marker lets re-runs skip the large re-download. The identification
+download is non-fatal; if it is unavailable, train those quickly (see
+claims/claim1_identification).
 
 RUNNING THE MODULES (run each script from its OWN directory)
 ------------------------------------------------------------
   # 1. Identification (train, then evaluate a fold)
   cd artifact/identification
   python train_classifier.py --dataset_path=../data/document_folds/collected.csv \
-         --out_dir=../checkpoints/id/collected --seed=0
+         --out_dir=checkpoints/collected --seed=0
   python evaluate_classification.py --mode=collected --seed=0
 
   # 2. Verifier (train + test)
   cd artifact/validation
   python train_test_verifier_single_split.py --dataset_path=../data/verification \
-         --seed=2 --out_dir=../checkpoints/verification
+         --seed=2 --out_dir=checkpoints/verification
 
   # 3. Generator (LoRA fine-tune)
   cd artifact/generation
   python train_generator.py \
          --train_path=<train_dataset> \
-         --seed=2 --out_dir=../checkpoints/cyber_act_2
+         --seed=2 --out_dir=checkpoints/cyber_act_2
 
   # 4. End-to-end CHAGent evaluation (DSARCP, with refinement)
   cd artifact/generation/evaluation
@@ -119,17 +122,20 @@ RUNNING THE MODULES (run each script from its OWN directory)
 
 CHECKPOINT PATH CONVENTIONS (important)
 ---------------------------------------
-The evaluation scripts load checkpoints from fixed relative paths:
-  - Identification eval expects:  ../checkpoints/id/<mode>/checkpoint
-  - Generation eval expects:      ../checkpoints/<mode>_act_<seed>/checkpoint   (LoRA adapter)
+Checkpoints live under each module's own checkpoints/ folder; the eval scripts
+load them from these relative paths:
+  - Identification eval:  checkpoints/<mode>_<seed>/checkpoint
+        (i.e. artifact/identification/checkpoints/<mode>_<seed>/checkpoint)
+  - Generation eval:      ../checkpoints/<mode>_act_<seed>/checkpoint   (LoRA adapter)
+        (i.e. artifact/generation/checkpoints/<mode>_act_<seed>/checkpoint)
   - Verifier used by generation:  ../checkpoints/verification/checkpoint
         (i.e. artifact/generation/checkpoints/verification/checkpoint)
-  - Verifier eval (Claim 3) expects: checkpoints/verification/checkpoint
+  - Verifier eval (Claim 3):      checkpoints/verification/checkpoint
         (i.e. artifact/validation/checkpoints/verification/checkpoint)
-Trainers save into <out_dir> with an inner checkpoint-XXXX directory (and the
-identification trainer appends _<seed> to out_dir). After training, make sure
-the produced checkpoint directory is reachable at the exact path the evaluator
-expects (rename/symlink the inner checkpoint-XXXX to "checkpoint" if needed).
+download_checkpoints.sh places all of these automatically. Trainers save into
+<out_dir> with an inner checkpoint-XXXX directory; after training, make sure the
+produced checkpoint dir is reachable as ".../checkpoint" (rename the inner
+checkpoint-XXXX if needed).
 
 REPRODUCING PAPER CLAIMS
 ------------------------
@@ -146,8 +152,8 @@ Checkpoints (run ./download_checkpoints.sh first — see above):
   - Validation/verifier: the seed-2 checkpoint, placed at
       artifact/validation/checkpoints/verification/checkpoint   (Claim 3) and
       artifact/generation/checkpoints/verification/checkpoint   (Claims 2 & 4)
-  - Identification: single seed per dataset, from the chagent-identification
-      repo, linked to artifact/checkpoints/id/<mode>/checkpoint
+  - Identification: single seed (0) per dataset, from the chagent-identification
+      repo, at artifact/identification/checkpoints/<mode>_0/checkpoint
       (train locally if the repo is unavailable)
 
 Generation reproduction protocol (Claims 2 & 4):

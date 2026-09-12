@@ -14,7 +14,7 @@ HARDWARE
   - CPU/RAM: >= 8 CPU cores and >= 32 GB system RAM recommended.
   - Disk: >= 60 GB free.
       * ~16-20 GB for the LLaMa-3-8B base model + HuggingFace cache.
-      * Space for checkpoints under artifact/checkpoints/ and results/.
+      * Space for checkpoints under artifact/<module>/checkpoints/ and results/.
 
 SOFTWARE
 --------

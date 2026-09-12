@@ -63,9 +63,8 @@ cd "$REPO_ROOT/artifact/generation/evaluation"
 VER_CKPT="../checkpoints/verification/checkpoint"
 if [ ! -d "$VER_CKPT" ]; then
     echo "ERROR: verifier checkpoint not found at artifact/generation/checkpoints/verification/checkpoint"
-    echo "       Refinement (--refine) needs it. Copy/symlink the seed-2 BART"
-    echo "       verifier checkpoint there, e.g.:"
-    echo "         ln -s \"\$(pwd)/../../validation/checkpoints/2/checkpoint\" \"\$(pwd)/../checkpoints/verification/checkpoint\""
+    echo "       Refinement (--refine) needs it. Run ../../download_checkpoints.sh"
+    echo "       (it places the generation verifier there automatically)."
     exit 1
 fi
 

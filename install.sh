@@ -112,25 +112,29 @@ if "$PYTHON_BIN" -m pip download --help 2>/dev/null | grep -q -- '--resume-retri
 fi
 
 # ---------------------------------------------------------------------------
-# 3. PyTorch (installed first so flash-attn can build against it)
+# 3. PyTorch (pinned to 2.8.0 — the tested version; installed first so
+#    flash-attn can build against it).
 #    Default: install from PyPI, whose wheels already bundle a CUDA runtime on
 #    Linux (and give the native build on macOS) — no CUDA toolkit needed.
 #    Overrides:
 #      CPU_ONLY=1        -> force the CPU-only build
-#      TORCH_CUDA=cu118  -> pin a specific CUDA wheel (e.g. to match an older
-#                           NVIDIA driver); only works on Linux.
+#      TORCH_CUDA=cu128  -> pull torch + nvidia-* wheels from download.pytorch.org
+#                           instead of pythonhosted (useful on networks that
+#                           throttle PyPI's CDN). Pick a tag that hosts 2.8.0 AND
+#                           matches your NVIDIA driver: cu126 or cu128 (NOT cu124,
+#                           which tops out at torch 2.6). Linux only.
 # ---------------------------------------------------------------------------
 if [ "${CPU_ONLY:-0}" = "1" ]; then
     echo "[3/5] Installing CPU-only torch (GPU features will not work) ..."
-    "$PYTHON_BIN" -m pip install "${PIP_RESUME[@]}" "torch>=2.1" \
+    "$PYTHON_BIN" -m pip install "${PIP_RESUME[@]}" "torch==2.8.0" \
         --index-url "https://download.pytorch.org/whl/cpu"
 elif [ -n "${TORCH_CUDA:-}" ]; then
     echo "[3/5] Installing torch (pinned CUDA build: ${TORCH_CUDA}) ..."
-    "$PYTHON_BIN" -m pip install "${PIP_RESUME[@]}" "torch>=2.1" \
+    "$PYTHON_BIN" -m pip install "${PIP_RESUME[@]}" "torch==2.8.0" \
         --index-url "https://download.pytorch.org/whl/${TORCH_CUDA}"
 else
     echo "[3/5] Installing torch from PyPI (bundles CUDA on Linux) ..."
-    "$PYTHON_BIN" -m pip install "${PIP_RESUME[@]}" "torch>=2.1"
+    "$PYTHON_BIN" -m pip install "${PIP_RESUME[@]}" "torch==2.8.0"
 fi
 
 # ---------------------------------------------------------------------------

@@ -9,22 +9,23 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
 
 # Document folds to evaluate. "overall" is the combined set; edit as needed.
 FOLDS="${FOLDS:-t2p acre ibm collected cyber overall}"
+SEED="${SEED:-0}"          # published identification checkpoints use seed 0
 
 cd "$REPO_ROOT/artifact/identification"
 
 for fold in $FOLDS; do
-    ckpt="../checkpoints/id/${fold}/checkpoint"
+    ckpt="checkpoints/${fold}_${SEED}/checkpoint"
     echo "############################################################"
-    echo "# Identification — fold: ${fold}"
-    echo "# checkpoint: ${ckpt}"
+    echo "# Identification — fold: ${fold}  seed: ${SEED}"
+    echo "# checkpoint: artifact/identification/${ckpt}"
     echo "############################################################"
     if [ ! -d "$ckpt" ]; then
-        echo "WARNING: checkpoint not found at $ckpt — skipping ${fold}."
-        echo "         Place the trained checkpoint there, or train with:"
-        echo "         python train_classifier.py --dataset_path=../data/document_folds/${fold}.csv --out_dir=../checkpoints/id/${fold} --seed=<seed>"
+        echo "WARNING: checkpoint not found at artifact/identification/${ckpt} — skipping ${fold}."
+        echo "         Run ../../download_checkpoints.sh, or train with:"
+        echo "         python train_classifier.py --dataset_path=../data/document_folds/${fold}.csv --out_dir=checkpoints/${fold} --seed=${SEED}"
         continue
     fi
-    python evaluate_classification.py --mode="${fold}"
+    python evaluate_classification.py --mode="${fold}" --seed="${SEED}"
 done
 
 echo

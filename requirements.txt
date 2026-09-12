@@ -12,7 +12,7 @@
 #     eval_chagent_sar.py (attn_implementation="flash_attention_2").
 
 # --- Deep learning / model stack ---
-torch>=2.1                    # installed by install.sh (PyPI wheels bundle CUDA on Linux)
+torch==2.8.0                  # installed by install.sh (PyPI wheels bundle CUDA on Linux)
 transformers>=4.46            # Trainer/SFTTrainer processing_class= API, LLaMa-3 chat template
 trl>=0.12                     # SFTConfig(max_length=...), SFTTrainer
 peft>=0.13                    # LoRA fine-tuning + PeftModel.from_pretrained

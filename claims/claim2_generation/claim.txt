@@ -51,7 +51,7 @@ Prerequisites
       artifact/generation/checkpoints/<mode>_act_<seed>/checkpoint   (generators)
       artifact/generation/checkpoints/verification/checkpoint        (verifier)
   The Hub stores generators nested as <mode>_act/<seed>/checkpoint; the helper
-  symlinks them to the flat <mode>_act_<seed> path eval_chagent.py expects.
+  renames them to the flat <mode>_act_<seed> path eval_chagent.py expects.
   The verifier is required here because refinement (--refine) is enabled.
 
 Seeds

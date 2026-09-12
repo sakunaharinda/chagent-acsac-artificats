@@ -13,11 +13,11 @@ What run.sh does
 ----------------
 Evaluates the PROVIDED identification checkpoint (seed 0) for each document fold
 using artifact/identification/evaluate_classification.py. One checkpoint per
-fold is expected at:
-    artifact/checkpoints/id/<fold>/checkpoint
+fold (seed 0) is expected at:
+    artifact/identification/checkpoints/<fold>_0/checkpoint
 (No training is performed; this reproduces the reported test-set metrics.)
-Note: evaluate_classification.py's checkpoint path has NO seed level
-(id/<fold>/checkpoint), so a single seed per fold is sufficient.
+Note: evaluate_classification.py loads checkpoints/<fold>_<seed>/checkpoint
+relative to artifact/identification/ (seed defaults to 0).
 
 Metrics reported (per fold)
 ---------------------------
@@ -38,14 +38,15 @@ Prerequisites
 - ../install.sh has been run and the venv is active.
 - HuggingFace access configured (HF_TOKEN or `huggingface-cli login`) so
   bert-base-uncased can be downloaded.
-- Identification checkpoints present at artifact/checkpoints/id/<fold>/checkpoint.
+- Identification checkpoints present at artifact/identification/checkpoints/<fold>_0/checkpoint.
 
   These are published (seed 0, per fold) at
-  https://huggingface.co/chagent-artifacts/chagent-identification with layout
-  <fold>/0/<model files>, and ../download_checkpoints.sh links each to
-  artifact/checkpoints/id/<fold>/checkpoint automatically. If a fold's checkpoint
-  is missing, run.sh prints the train command (bert-base-uncased is small and
-  trains quickly) and skips that fold rather than evaluating a non-existent model.
+  https://huggingface.co/chagent-artifacts/chagent-identification (Hub layout
+  <fold>/0/checkpoint). ../download_checkpoints.sh downloads them and renames
+  <fold>/0 -> <fold>_0 so the final path is artifact/identification/checkpoints/<fold>_0/checkpoint.
+  If a fold's checkpoint is missing, run.sh prints the train command
+  (bert-base-uncased is small and trains quickly) and skips that fold rather
+  than evaluating a non-existent model.
 
 See expected/expected_output.txt for the output format and the per-fold reference
 numbers to compare against.

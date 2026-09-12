@@ -54,7 +54,7 @@ def main(mode, batch_size = 16, device = 'cuda:0', seed=0):
     else:
         test_path = f'../data/document_folds/{mode}.csv'
         
-    checkpoint = f'checkpoints/id/{mode}_{seed}/checkpoint'
+    checkpoint = f'checkpoints/{mode}_{seed}/checkpoint'
 
     model = BertForSequenceClassification.from_pretrained(checkpoint, num_labels=NUM_CLASSES).to(device)
     tokenizer = BertTokenizerFast.from_pretrained(checkpoint)
