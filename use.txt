@@ -42,14 +42,11 @@ LIMITATIONS
 
 ETHICAL CONSIDERATIONS
 ----------------------
-The models process access-control text that may reference organizational roles
-and resources. Do not submit real, sensitive, or personally identifying policy
-text to third-party services. Any deployment that affects real access decisions
-must keep a human in the loop and undergo independent security review.
+See ethics.txt
 
 DATA AND MODEL LICENSES
 -----------------------
 Use of meta-llama/Meta-Llama-3-8B-Instruct, facebook/bart-large,
 bert-base-uncased, mixedbread-ai/mxbai-embed-large-v1, and the bundled datasets
-is subject to their respective upstream licenses/terms. See license.txt for the
+is subject to their respective upstream licenses/terms. See LICENSE for the
 license covering the code and artifact contributed here.

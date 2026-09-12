@@ -7,7 +7,7 @@ Each stage of CHAGent's generation pipeline contributes to final quality: entity
 
 Maps to
 -------
-Paper Section/Table: <FILL IN — e.g., "Table W: ablation study">.
+Paper Figures 3 and 4.
 
 What run.sh does
 ----------------

@@ -28,7 +28,7 @@ DIRECTORY LAYOUT
   install.sh         Installs all dependencies into ./.venv
   requirements.txt   Python dependencies
   README.txt         This file
-  license.txt        License
+  LICENSE            License
   use.txt            Intended use and limitations
   paper/             The paper PDF
 

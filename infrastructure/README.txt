@@ -6,8 +6,8 @@
 HARDWARE
 --------
   - GPU: 1x NVIDIA CUDA GPU.
-      * LLaMa-3-8B LoRA fine-tuning + inference: >= 24 GB VRAM recommended
-        (e.g., RTX A100). bf16 + flash-attention-2 +
+      * LLaMa-3-8B LoRA fine-tuning + inference: >= 40 GB VRAM recommended
+        (e.g., Nvidia A100). bf16 + flash-attention-2 +
         8-bit AdamW keep training within this budget.
       * BERT (identification) and BART-large (verification) fit comfortably in
         <= 16 GB VRAM.
@@ -21,8 +21,11 @@ SOFTWARE
   - OS: Linux (Ubuntu 20.04/22.04 tested class of environment).
   - Python: 3.12 (tested with 3.12.13). The interpreter must include the
     _ctypes stdlib module (pyenv builds without libffi omit it and will fail).
-  - NVIDIA driver + CUDA runtime compatible with the installed torch wheel
-    (default install.sh targets CUDA 12.1; override with TORCH_CUDA=cuXXX).
+  - NVIDIA driver compatible with the installed torch wheel. By default
+    install.sh installs torch (2.8.0) from PyPI, whose Linux wheels bundle a
+    CUDA runtime (no system CUDA toolkit needed). On networks that throttle
+    PyPI's CDN, set TORCH_CUDA=cu126 (or cu128) to pull torch from
+    download.pytorch.org instead — pick a tag matching your driver.
   - nvcc / CUDA toolkit is required ONLY to build flash-attn (optional; used by
     train_generator.py and eval_chagent_sar.py). The main DSARCP evaluation
     runs without flash-attn.
@@ -68,25 +71,15 @@ ESTIMATED RUNTIMES (single NVIDIA GPU, authors' setup; hardware-dependent)
 Full DSARCP evaluation (eval_chagent.py --refine), measured mean wall-clock time
 PER SEED, averaged over the available seeds (from claims/claim2_generation/eval_logs):
 
-  dataset     mean time / seed     seeds averaged
-  ---------   ----------------     --------------
-  ibm         ~19 min              3
-  cyber       ~25 min              2
-  collected   ~25 min              3
-  t2p         ~38 min              3
-  overall     ~64 min              2
-  acre        ~118 min             3
-  (mean across all 16 full-pipeline runs: ~49 min/run)
+  dataset     mean time / seed     
+  ---------   ----------------    
+  ibm         ~19 min              
+  cyber       ~25 min              
+  collected   ~25 min              
+  t2p         ~38 min              
+  overall     ~64 min              
+  acre        ~118 min             
 
-Notes:
-  - Reproducing Claim 2 runs each dataset for 3 seeds, so multiply the per-seed
-    time by ~3 (e.g. acre ~6 h, ibm ~1 h for all three seeds).
-  - Times scale with fold size and with how often refinement retries (up to 3x),
-    which is why acre (largest) dominates. Ablation configs without --refine
-    (Claim 4) are faster: the --no_retrieve runs are the quickest.
-  - Training (not needed to reproduce, since checkpoints are provided): generator
-    LoRA fine-tuning takes a few hours; the BERT identifier and BART verifier are
-    much lighter (minutes to ~1-3 hours).
 
 REPRODUCIBILITY NOTES
 ---------------------
