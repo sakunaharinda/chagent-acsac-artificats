@@ -1,19 +1,17 @@
-Expected output — Claim 3 (policy verifier)
+Expected output — Claim 3 (policy validator)
 ===========================================
 
 Reference logs
 --------------
-Verifier evaluation reports for three training seeds are included (trimmed to
-the report section) under:
+Validator evaluation reports for three training seeds are included under:
     claims/claim3_verification/eval_logs/ver_0.txt   (seed 0)
     claims/claim3_verification/eval_logs/ver_1.txt   (seed 1)
     claims/claim3_verification/eval_logs/ver_2.txt   (seed 2)
 
 run.sh (eval_test.py) evaluates the PROVIDED seed-2 checkpoint, so its output
 should match ver_2.txt. Only the seed-2 checkpoint is published on the Hub
-(each verifier checkpoint is ~5 GB), so seeds 0 and 1 are reference-only: to
-reproduce them, retrain with train_test_verifier_single_split.py --seed=0/1
-(the verification training data is included).
+(each validator checkpoint is ~5 GB); the seed 0 and 1 reports are included here
+as reference (ver_0.txt, ver_1.txt).
 
 Output format (what eval_test.py prints)
 -----------------------------------------
@@ -43,7 +41,6 @@ Binary task:
 Interpretation
 --------------
 Running run.sh on the provided seed-2 checkpoint should reproduce the seed-2 row
-(and the full per-class breakdown in ver_2.txt) exactly, since evaluation is
-deterministic (argmax over logits) on a fixed test set. The seed 0/1 rows show
+(and the full per-class breakdown in ver_2.txt). The seed 0/1 rows show
 the run-to-run spread; the paper's mean/SD across seeds {0,1,2} is aggregated
 EXTERNALLY from these three values.

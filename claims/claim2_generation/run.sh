@@ -32,13 +32,8 @@ elif [ -t 0 ]; then
                    logs in eval_logs/.
 
   [E] Everything : all datasets, seeds 2, 3, 4 (18 runs, ~20 hours)
-                   Needed only for the full three-seed mean/SD reported in the
-                   paper (mean/SD are aggregated externally).
+                   Needed only for the full three-seed mean/SD (mean/SD are aggregated externally).
 
- Time cost of [E]: the full pipeline (retrieval + verification-guided
- refinement) averages ~49 min per (dataset, seed). Per-dataset it ranges from
- ~19 min (ibm) to ~118 min (acre); acre alone is ~6 h across three seeds.
- Running everything is therefore ~13-15 h of GPU time.
 
  Tip: to run a single cell instead, re-invoke with e.g.
         DATASETS=ibm SEEDS=3 ./run.sh

@@ -2,7 +2,7 @@ import os
 import torch
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
 from tqdm import tqdm
-from sklearn.metrics import classification_report, matthews_corrcoef
+from sklearn.metrics import classification_report, matthews_corrcoef, confusion_matrix
 import numpy as np
 import pandas as pd
 from utils import prepare_inputs_bart
@@ -54,13 +54,18 @@ def eval_ckpt(df, ckpt):
     print(
         classification_report(truth_bin, preds_bin, target_names=["negative", "positive"])
     )
+    tn, fp, fn, tp = confusion_matrix(truth_bin, preds_bin).ravel().tolist()
+    print(f"TP: {tp}, TN: {tn}, FP: {fp}, FN: {fn}")
     print()
     print(f"MCC: {matthews_corrcoef(np.array(truth_bin), np.array(preds_bin))}")
     print()
     print(classification_report(truth, preds))
     print("=="*50)
+    print(confusion_matrix(truth, preds))
     print()
-    
+
+    del ver_model
+
 def main():
     
 

@@ -36,12 +36,4 @@ Metrics reported (per config, per dataset, per seed)
   Results (SARCP):          Precision, Recall, F1 (+ component-wise F1).
   Results (ACR Generation): Precision, Recall, F1.
 
-Prerequisites
--------------
-Same as Claim 2 (run ../download_checkpoints.sh first):
-  - Generator checkpoints at artifact/generation/checkpoints/<mode>_act_<seed>/checkpoint
-    (seeds 2, 3, 4; the Default scope uses seed 3, scope [E] uses all three)
-  - Verifier checkpoint at   artifact/generation/checkpoints/verification/checkpoint
-    (needed only for configuration D, --refine)
-  - venv active, HuggingFace access configured, GPU available.
 

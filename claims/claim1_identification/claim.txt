@@ -7,7 +7,7 @@ CHAGent's identification module accurately distinguishes Natural Language Access
 
 Maps to
 -------
-Paper Section/Table: <FILL IN — e.g., "Table X: NLACP identification results">.
+Paper Table 3.
 
 What run.sh does
 ----------------
@@ -29,11 +29,8 @@ numbers are tabulated in expected/expected_output.txt.
 Seed coverage
 -------------
 A single seed (0) is shipped for identification; these checkpoints let you
-exercise the module and observe its per-fold behaviour on that seed. The full
-multi-seed mean/SD reported in the paper is a lightweight extension:
-bert-base-uncased trains quickly and the training script + data are included, so
-you can train extra seeds with the command run.sh prints and evaluate them the
-same way.
+exercise the module and observe its per-fold behaviour on that seed. The paper
+reports the mean/SD over multiple seeds, aggregated externally.
 
 Prerequisites
 -------------
@@ -46,9 +43,8 @@ Prerequisites
   https://huggingface.co/chagent-artifacts/chagent-identification (Hub layout
   <fold>/0/checkpoint). ../download_checkpoints.sh downloads them and renames
   <fold>/0 -> <fold>_0 so the final path is artifact/identification/checkpoints/<fold>_0/checkpoint.
-  If a fold's checkpoint is missing, run.sh prints the train command
-  (bert-base-uncased is small and trains quickly) and skips that fold rather
-  than evaluating a non-existent model.
+  If a fold's checkpoint is missing, run.sh points to download_checkpoints.sh
+  and skips that fold rather than evaluating a non-existent model.
 
 See expected/expected_output.txt for the output format and the per-fold reference
 numbers to compare against.

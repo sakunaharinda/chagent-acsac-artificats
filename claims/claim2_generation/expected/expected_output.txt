@@ -39,6 +39,7 @@ computed EXTERNALLY from these per-seed values.
   collected   2       0.8476       0.7862
   collected   3       0.8720       0.8418
   collected   4       0.8803       0.8256
+  cyber       2       0.6935       0.6993
   cyber       3       0.6944       0.6646
   cyber       4       0.6798       0.6688
   overall     3       0.8476       0.8113
@@ -48,14 +49,12 @@ Coverage note
 -------------
 The generation checkpoints cover seeds 2, 3, and 4. In these reference logs,
 seeds 3 and 4 are present for every dataset; seed 2 is present for t2p, acre,
-ibm, and collected (cyber and overall have seeds 3 and 4). Compute the mean/SD
-over whichever seeds you run — a full three-seed set is available from the Hub
-checkpoints, so you can regenerate any missing seed with run.sh.
+ibm, cyber, and collected.
 
 Interpretation
 --------------
 A successful reproduction matches the SARCP F1 and ACR-Generation F1 above for
-the corresponding (dataset, seed) within small run-to-run variation (greedy
+the corresponding (dataset, seed) within an expected run-to-run variation (greedy
 decoding; minor differences across GPU/driver/library versions are expected).
 Generations are also written to <RESULT_DIR>/<mode>/generations_refined.json and
 per-example refinement traces to <RESULT_DIR>/<mode>/refinements/.

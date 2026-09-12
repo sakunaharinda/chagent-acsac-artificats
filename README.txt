@@ -12,7 +12,7 @@ Access Control Rules (ACRs); each ACR is a dictionary with six fields:
     decision  (allow | deny)
     subject   action   resource   purpose   condition
 
-The pipeline has three modules, each trained and evaluated independently:
+The pipeline has three modules, each evaluated independently:
 
   1. Identification (artifact/identification/)
 
@@ -22,7 +22,7 @@ The pipeline has three modules, each trained and evaluated independently:
 
 DIRECTORY LAYOUT
 ----------------
-  artifact/          Code, data, and (after training) model checkpoints
+  artifact/          Code, data, and downloaded model checkpoints
   claims/            One folder per paper claim: claim.txt, run.sh, expected/
   infrastructure/    Hardware/software requirements and access notes
   install.sh         Installs all dependencies into ./.venv
@@ -74,26 +74,22 @@ Fetch and arrange them into the exact paths the scripts expect with:
 
 RUNNING THE MODULES (run each script from its OWN directory)
 ------------------------------------------------------------
-  # 1. Identification (train, then evaluate a fold)
+Run ./download_checkpoints.sh first (see above), then evaluate any module:
+
+  # 1. Identification (evaluate a fold)
   cd artifact/identification
-  python train_classifier.py --dataset_path=../data/document_folds/collected.csv \
-         --out_dir=checkpoints/collected --seed=0
   python evaluate_classification.py --mode=collected --seed=0
 
-  # 2. Verifier (train + test)
+  # 2. Verifier (evaluate on the held-out test set)
   cd artifact/validation
-  python train_test_verifier_single_split.py --dataset_path=../data/verification \
-         --seed=2 --out_dir=checkpoints/verification
+  python eval_test.py
 
-  # 3. Generator (LoRA fine-tune)
-  cd artifact/generation
-  python train_generator.py \
-         --train_path=<train_dataset> \
-         --seed=2 --out_dir=checkpoints/cyber_act_2
-
-  # 4. End-to-end CHAGent evaluation (DSARCP, with refinement)
+  # 3. End-to-end CHAGent evaluation (DSARCP, with refinement)
   cd artifact/generation/evaluation
   python eval_chagent.py --mode=cyber --result_dir="results/sarcp" --k=3 --seed=2 --refine
+
+The self-contained runners under claims/ wrap these — see "RUNNING THE
+EXPERIMENTS" below.
 
 CHECKPOINT PATH CONVENTIONS (important)
 ---------------------------------------
@@ -107,10 +103,7 @@ load them from these relative paths:
         (i.e. artifact/generation/checkpoints/verification/checkpoint)
   - Verifier eval (Claim 3):      checkpoints/verification/checkpoint
         (i.e. artifact/validation/checkpoints/verification/checkpoint)
-download_checkpoints.sh places all of these automatically. Trainers save into
-<out_dir> with an inner checkpoint-XXXX directory; after training, make sure the
-produced checkpoint dir is reachable as ".../checkpoint" (rename the inner
-checkpoint-XXXX if needed).
+download_checkpoints.sh places all of these automatically.
 
 RUNNING THE EXPERIMENTS (claim -> artifact mapping)
 ---------------------------------------------------
@@ -125,6 +118,15 @@ claims/<n>/expected/.
   claims/claim3_verification/run.sh     policy verifier evaluation
   claims/claim4_ablation/run.sh         retrieval/post-process/refinement ablation
 
+How to run a claim:
+  First `source .venv/bin/activate` and run ./download_checkpoints.sh (once).
+  Then invoke a runner with bash — it can be launched from ANY directory (each
+  script locates the repo and cd's into the right module itself):
+      bash claims/claim1_identification/run.sh
+  Environment overrides work from anywhere too, e.g.:
+      DATASETS=ibm SEEDS=3 bash claims/claim2_generation/run.sh
+  (Use bash, not sh — the runners rely on bash features.)
+
 Checkpoints (run ./download_checkpoints.sh first — see above):
   - Generation: every dataset x seeds {2,3,4}
       (artifact/generation/checkpoints/<mode>_act_<seed>/checkpoint)
@@ -133,7 +135,6 @@ Checkpoints (run ./download_checkpoints.sh first — see above):
       artifact/generation/checkpoints/verification/checkpoint   (Claims 2 & 4)
   - Identification: seed 0 per dataset, from the chagent-identification repo, at
       artifact/identification/checkpoints/<mode>_0/checkpoint
-      (train locally if the repo is unavailable)
 
 Generation runs (Claims 2 & 4):
   The generation runner can be run per seed (seeds 2, 3, 4); each run prints its
@@ -145,11 +146,9 @@ Note on seed coverage (single-seed checkpoints for two modules):
   Generation ships all three seeds (2, 3, 4). For identification (Claim 1) and
   verification (Claim 3) a single representative-seed checkpoint is published
   (verifier: seed 2 — each verifier checkpoint is ~5 GB). These runs exercise
-  the module and demonstrate the reported behaviour on that seed; obtaining the
-  full multi-seed mean/SD is a lightweight extension (BERT/BART train quickly,
-  and the training scripts + data are included — each run.sh prints the exact
-  train command). For reference, the per-seed evaluation logs for the verifier's
-  seeds 0/1/2 are included under claims/claim3_verification/eval_logs/.
+  the module and demonstrate the reported behaviour on that seed. For reference,
+  the per-seed evaluation logs for the verifier's seeds 0/1/2 are included under
+  claims/claim3_verification/eval_logs/.
 
 NOTE ON SECRETS
 ---------------

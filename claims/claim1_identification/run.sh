@@ -21,8 +21,7 @@ for fold in $FOLDS; do
     echo "############################################################"
     if [ ! -d "$ckpt" ]; then
         echo "WARNING: checkpoint not found at artifact/identification/${ckpt} — skipping ${fold}."
-        echo "         Run ../../download_checkpoints.sh, or train with:"
-        echo "         python train_classifier.py --dataset_path=../data/document_folds/${fold}.csv --out_dir=checkpoints/${fold} --seed=${SEED}"
+        echo "         Run ../../download_checkpoints.sh to fetch the checkpoints."
         continue
     fi
     python evaluate_classification.py --mode="${fold}" --seed="${SEED}"

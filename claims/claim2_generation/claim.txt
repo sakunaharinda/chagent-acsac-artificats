@@ -7,7 +7,7 @@ CHAGent generates correct Access Control Policies (decision, subject, action, re
 
 Maps to
 -------
-Paper Section/Table: <FILL IN — e.g., "Table Y: DSARCP generation results">.
+Paper Table 4 and 5.
 
 What run.sh does
 ----------------
