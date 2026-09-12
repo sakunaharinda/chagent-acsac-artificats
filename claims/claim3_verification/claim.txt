@@ -24,15 +24,15 @@ Metrics reported
     (see ID2AUGS: allow_deny, csub, cact, cres, ccond, cpur, msub, mres,
      mcond, mpur, mrules, correct).
 
-Reproducibility note
---------------------
+Seed coverage
+-------------
 The paper's verifier result is a mean over three training seeds (0, 1, 2); the
 per-seed evaluation reports for all three are included as reference in
-eval_logs/ver_{0,1,2}.txt. However, only the seed-2 CHECKPOINT is published
-(each verifier checkpoint is ~5 GB), so run.sh reproduces the seed-2 row exactly
-(deterministic eval). Seeds 0 and 1 are reference-only: reproducing them is a
-simple extension — the verifier (BART-large) is lightweight and the training
-script + verification data are included, so retrain with
+eval_logs/ver_{0,1,2}.txt. Only the seed-2 CHECKPOINT is published (each verifier
+checkpoint is ~5 GB), so run.sh exercises the verifier on seed 2 and prints that
+seed's report (deterministic eval). Seeds 0 and 1 are reference-only: obtaining
+them is a lightweight extension — the verifier (BART-large) trains quickly and
+the training script + verification data are included, so retrain with
 train_test_verifier_single_split.py --seed=0 (or 1) and evaluate. Mean/SD across
 the three seeds is aggregated EXTERNALLY.
 

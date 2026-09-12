@@ -31,12 +31,12 @@ ranging from ~19 min (ibm) to ~118 min (acre; ~6 h across three seeds), so the
 whole sweep is ~13-15 h of GPU time. Measured per-dataset/seed times are in
 infrastructure/README.txt.
 
-IMPORTANT — reproduction protocol:
-  * The Default scope reproduces the single-seed (seed 3) results directly.
-  * For the paper's multi-seed numbers, run scope [E]; MEAN and STANDARD
-    DEVIATION across the three seeds are computed EXTERNALLY (not by this
-    script). Collect the per-seed F1 values printed by the runs and aggregate
-    them yourself, then compare mean +/- SD to the paper.
+IMPORTANT — run protocol:
+  * The Default scope runs the full pipeline for one seed (seed 3) and prints
+    that seed's F1 directly.
+  * The paper reports the mean/SD over three seeds (2, 3, 4). To produce all
+    three, run scope [E]; the MEAN and STANDARD DEVIATION are then computed
+    EXTERNALLY (not by this script) by collecting the per-seed F1 values.
 
 Metrics reported (per dataset, per seed)
 ----------------------------------------

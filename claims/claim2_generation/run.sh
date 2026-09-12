@@ -25,10 +25,10 @@ if [ -n "${SEEDS:-}" ]; then
 elif [ -t 0 ]; then
     cat <<'EOF'
 ============================================================================
- Claim 2 — choose reproduction scope
+ Claim 2 — choose run scope
 ============================================================================
   [D] Default    : all datasets, seed 3 only  (6 runs, ~5 hours on an A100)
-                   Reproduces the seed-3 point estimates; matches the seed-3
+                   Runs the full pipeline for seed 3; matches the seed-3
                    logs in eval_logs/.
 
   [E] Everything : all datasets, seeds 2, 3, 4 (18 runs, ~20 hours)

@@ -12,26 +12,13 @@ Access Control Rules (ACRs); each ACR is a dictionary with six fields:
     decision  (allow | deny)
     subject   action   resource   purpose   condition
 
-Missing fields take the literal value 'none'. The full schema and worked
-examples live in artifact/generation/evaluation/prompts.py (ACP_DEFN).
-
 The pipeline has three modules, each trained and evaluated independently:
 
   1. Identification (artifact/identification/)
-       Fine-tuned bert-base-uncased binary classifier that decides whether a
-       sentence is an NLACP.
 
   2. Generation (artifact/generation/)
-       LoRA fine-tuned meta-llama/Meta-Llama-3-8B-Instruct that generates the
-       ACP from an NLACP. Evaluation (artifact/generation/evaluation/) adds:
-         - Retrieval (RAG): per-component FAISS entity stores snap generated
-           values to known entities (artifact/data/vectorstores/).
-         - Verification-guided iterative refinement: the BART verifier flags an
-           error category and the generator re-generates, up to 3 times.
 
   3. Validation / Verification (artifact/validation/)
-       facebook/bart-large classifier that labels a (NLACP, policy) pair as
-       'correct' or one of 11 error categories.
 
 DIRECTORY LAYOUT
 ----------------
@@ -48,14 +35,13 @@ DIRECTORY LAYOUT
 REQUIREMENTS
 ------------
 See infrastructure/README.txt for full details. In short:
-  - Linux with an NVIDIA CUDA GPU (>= 24 GB VRAM recommended for LLaMa-3-8B).
+  - Linux with an NVIDIA CUDA GPU (A100 with >= 40 GB VRAM recommended for LLaMa-3-8B).
   - Python 3.12 (tested with 3.12.13).
-  - A HuggingFace account with access to the gated model
-    meta-llama/Meta-Llama-3-8B-Instruct.
+  - A HuggingFace account with access to the gated model meta-llama/Meta-Llama-3-8B-Instruct.
 
 INSTALLATION
 ------------
-  ./install.sh                 # creates ./.venv and installs everything
+  bash install.sh                 # creates ./.venv and installs everything
   source .venv/bin/activate
 
   # Authenticate for the gated LLaMa-3 base model (choose one):
@@ -65,7 +51,7 @@ INSTALLATION
   # Optional but recommended: point the HF cache at a large disk
   export HF_HOME=/path/with/space/huggingface
 
-DATA (already included under artifact/data/ — no download needed)
+TEST DATA (already included under artifact/data/ — no download needed)
 -----------------------------------------------------------------
   document_folds/<fold>.csv       Identification test data (columns: input, acp, output)
   document_folds/<fold>_acp.csv   Generation eval data    (columns: input, output[, origin])
@@ -74,28 +60,17 @@ DATA (already included under artifact/data/ — no download needed)
 
   Folds/datasets: t2p, acre, ibm, collected, cyber, overall (+ misc store).
 
-PRETRAINED CHECKPOINTS (download; ~15 GB total)
+PRETRAINED CHECKPOINTS (download; ~20 GB total)
 -----------------------------------------------
 Checkpoints are hosted under https://huggingface.co/chagent-artifacts:
   chagent-artifacts/chagent-generation     generators (<dataset>_act/<seed>/checkpoint,
                                             seeds 2,3,4) + verification/checkpoint
   chagent-artifacts/chagent-verification    seed-2 BART verifier (2/checkpoint)
-  chagent-artifacts/chagent-identification  identifiers (single seed; may be
-                                            private/gated — set HF_TOKEN)
+  chagent-artifacts/chagent-identification  identifiers (single seed)
 
 Fetch and arrange them into the exact paths the scripts expect with:
 
     ./download_checkpoints.sh
-
-It downloads each repo into that module's own checkpoints/ folder and renames
-the Hub's nested <name>/<seed> dirs to the flat <name>_<seed> layout the eval
-scripts use (no symlinks, no staging dirs):
-    artifact/generation/checkpoints/<mode>_act_<seed>/checkpoint  (+ verification/checkpoint)
-    artifact/identification/checkpoints/<mode>_<seed>/checkpoint
-    artifact/validation/checkpoints/verification/checkpoint
-A ".arranged" marker lets re-runs skip the large re-download. The identification
-download is non-fatal; if it is unavailable, train those quickly (see
-claims/claim1_identification).
 
 RUNNING THE MODULES (run each script from its OWN directory)
 ------------------------------------------------------------
@@ -137,55 +112,44 @@ download_checkpoints.sh places all of these automatically. Trainers save into
 produced checkpoint dir is reachable as ".../checkpoint" (rename the inner
 checkpoint-XXXX if needed).
 
-REPRODUCING PAPER CLAIMS
-------------------------
-Each claim has a self-contained runner that EVALUATES PROVIDED CHECKPOINTS
-(no training required for reproduction):
-  claims/claim1_identification/run.sh   evaluates one checkpoint per dataset
-  claims/claim2_generation/run.sh       runs 3 seeds x dataset (see below)
-  claims/claim3_verification/run.sh     evaluates the seed-2 verifier checkpoint
+RUNNING THE EXPERIMENTS (claim -> artifact mapping)
+---------------------------------------------------
+Each of the paper's experiments has a self-contained runner under claims/ that
+exercises the corresponding module on the PROVIDED checkpoints (no training
+needed). Each claims/<n>/claim.txt states which paper section/table/figure the
+experiment maps to, and each run prints results in the format shown in
+claims/<n>/expected/.
+
+  claims/claim1_identification/run.sh   NLACP identification, per fold
+  claims/claim2_generation/run.sh       end-to-end DSARCP generation
+  claims/claim3_verification/run.sh     policy verifier evaluation
   claims/claim4_ablation/run.sh         retrieval/post-process/refinement ablation
 
 Checkpoints (run ./download_checkpoints.sh first — see above):
-  - Generation: complete set — every dataset x seeds {2,3,4}
+  - Generation: every dataset x seeds {2,3,4}
       (artifact/generation/checkpoints/<mode>_act_<seed>/checkpoint)
-  - Validation/verifier: the seed-2 checkpoint, placed at
+  - Validation/verifier: the seed-2 checkpoint, at
       artifact/validation/checkpoints/verification/checkpoint   (Claim 3) and
       artifact/generation/checkpoints/verification/checkpoint   (Claims 2 & 4)
-  - Identification: single seed (0) per dataset, from the chagent-identification
-      repo, at artifact/identification/checkpoints/<mode>_0/checkpoint
+  - Identification: seed 0 per dataset, from the chagent-identification repo, at
+      artifact/identification/checkpoints/<mode>_0/checkpoint
       (train locally if the repo is unavailable)
 
-Generation reproduction protocol (Claims 2 & 4):
-  The generation runner is executed THREE TIMES per dataset, once per seed
-  (seeds 2, 3, 4). Each run prints its own SARCP F1 and ACR-Generation F1. The
-  MEAN and STANDARD DEVIATION across the three seeds are computed EXTERNALLY
-  (not by the script); collect the three per-seed values and aggregate them,
-  then compare to the paper. The seed values are set via the SEEDS variable at
-  the top of run.sh and match the checkpoint directory names (<mode>_act_<seed>).
+Generation runs (Claims 2 & 4):
+  The generation runner can be run per seed (seeds 2, 3, 4); each run prints its
+  own SARCP F1 and ACR-Generation F1. The paper reports the mean/SD over the
+  three seeds, aggregated externally — see claims/claim2_generation/claim.txt for
+  the interactive scope prompt and the time cost of running all seeds.
 
-Every run.sh prints results in the same format shown in the corresponding
-claims/<claim>/expected/ file. See each claim.txt for what it demonstrates and
-which paper table/figure it maps to.
-
-Note on seed coverage:
-  The generation checkpoints cover all three seeds (2, 3, 4), so Claims 2 and 4
-  reproduce the reported per-seed results directly (mean/SD aggregated externally).
-
-  For identification (Claim 1) and verification (Claim 3) we publish a single
-  representative-seed CHECKPOINT (for verification, seed 2 — each verifier
-  checkpoint is ~5 GB, hence one seed), which reproduces that seed's reported
-  results exactly.
-    - Claim 3: the paper's verifier result is a mean over seeds 0, 1, 2. The
-      per-seed evaluation logs for all three are included as reference
-      (claims/claim3_verification/eval_logs/ver_{0,1,2}.txt); run.sh reproduces
-      seed 2, the only published checkpoint.
-    - Claim 1: one checkpoint per dataset (single seed) reproduces that seed's
-      identification results.
-  Reproducing additional seeds is a simple extension — both modules are
-  lightweight (BERT/BART) and the training scripts + data are included, so you
-  can retrain the remaining seeds and evaluate them the same way. Each run.sh
-  prints the exact train command; mean/SD across seeds is aggregated externally.
+Note on seed coverage (single-seed checkpoints for two modules):
+  Generation ships all three seeds (2, 3, 4). For identification (Claim 1) and
+  verification (Claim 3) a single representative-seed checkpoint is published
+  (verifier: seed 2 — each verifier checkpoint is ~5 GB). These runs exercise
+  the module and demonstrate the reported behaviour on that seed; obtaining the
+  full multi-seed mean/SD is a lightweight extension (BERT/BART train quickly,
+  and the training scripts + data are included — each run.sh prints the exact
+  train command). For reference, the per-seed evaluation logs for the verifier's
+  seeds 0/1/2 are included under claims/claim3_verification/eval_logs/.
 
 NOTE ON SECRETS
 ---------------

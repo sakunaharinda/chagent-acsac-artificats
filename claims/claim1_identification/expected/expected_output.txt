@@ -32,4 +32,4 @@ Interpretation
 --------------
 A single seed (0) is published per fold; the paper's mean/SD (if reported over
 multiple seeds) is aggregated externally after training additional seeds — see
-the Reproducibility note in claim.txt.
+the Seed coverage note in claim.txt.

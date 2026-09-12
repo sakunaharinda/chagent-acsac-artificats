@@ -15,7 +15,8 @@ Evaluates the PROVIDED identification checkpoint (seed 0) for each document fold
 using artifact/identification/evaluate_classification.py. One checkpoint per
 fold (seed 0) is expected at:
     artifact/identification/checkpoints/<fold>_0/checkpoint
-(No training is performed; this reproduces the reported test-set metrics.)
+(No training is performed; this exercises the identification module and prints
+its test-set metrics.)
 Note: evaluate_classification.py loads checkpoints/<fold>_<seed>/checkpoint
 relative to artifact/identification/ (seed defaults to 0).
 
@@ -25,13 +26,14 @@ accuracy, precision, recall, F1  (printed as a Python dict). The seed-0 output
 for every fold is included as reference in eval_logs/<fold>_0.txt, and the
 numbers are tabulated in expected/expected_output.txt.
 
-Reproducibility note
---------------------
-A single seed (0) is shipped for identification; these checkpoints faithfully
-reproduce that seed's reported single-seed results.
-Obtaining the full multi-seed mean/SD is a simple extension: bert-base-uncased
-is lightweight and the training script + data are included, so train extra seeds
-with the command run.sh prints and evaluate them the same way.
+Seed coverage
+-------------
+A single seed (0) is shipped for identification; these checkpoints let you
+exercise the module and observe its per-fold behaviour on that seed. The full
+multi-seed mean/SD reported in the paper is a lightweight extension:
+bert-base-uncased trains quickly and the training script + data are included, so
+you can train extra seeds with the command run.sh prints and evaluate them the
+same way.
 
 Prerequisites
 -------------
