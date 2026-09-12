@@ -56,11 +56,18 @@ echo "=========================================================="
 # 1. Virtual environment
 # ---------------------------------------------------------------------------
 if [ "${NO_VENV:-0}" != "1" ]; then
+    # If a .venv already exists but was built with an unsuitable Python
+    # (e.g. an old system python3.6 from a previous run), recreate it — reusing
+    # it would install packages under the wrong interpreter.
+    if [ -d ".venv" ] && ! .venv/bin/python -c 'import sys,ctypes; sys.exit(0 if sys.version_info[:2]>=(3,9) else 1)' >/dev/null 2>&1; then
+        echo "[1/5] Existing ./.venv uses an unsuitable Python — recreating it ..."
+        rm -rf .venv
+    fi
     if [ ! -d ".venv" ]; then
-        echo "[1/5] Creating virtual environment at ./.venv ..."
+        echo "[1/5] Creating virtual environment at ./.venv (from $PYTHON_BIN) ..."
         "$PYTHON_BIN" -m venv .venv
     else
-        echo "[1/5] Reusing existing ./.venv ..."
+        echo "[1/5] Reusing existing ./.venv ($(.venv/bin/python --version 2>&1)) ..."
     fi
     # shellcheck disable=SC1091
     source .venv/bin/activate
