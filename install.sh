@@ -101,6 +101,16 @@ fi
 echo "[2/5] Upgrading pip / setuptools / wheel ..."
 "$PYTHON_BIN" -m pip install --upgrade pip setuptools wheel
 
+# Make downloads resilient on flaky / proxied networks (torch is a ~500 MB+
+# wheel). These env vars apply to every pip invocation below.
+export PIP_RETRIES="${PIP_RETRIES:-10}"
+export PIP_DEFAULT_TIMEOUT="${PIP_DEFAULT_TIMEOUT:-120}"
+# --resume-retries exists only on newer pip; add it if supported.
+PIP_RESUME=()
+if "$PYTHON_BIN" -m pip download --help 2>/dev/null | grep -q -- '--resume-retries'; then
+    PIP_RESUME=(--resume-retries 10)
+fi
+
 # ---------------------------------------------------------------------------
 # 3. PyTorch (installed first so flash-attn can build against it)
 #    Default: install from PyPI, whose wheels already bundle a CUDA runtime on
@@ -112,22 +122,22 @@ echo "[2/5] Upgrading pip / setuptools / wheel ..."
 # ---------------------------------------------------------------------------
 if [ "${CPU_ONLY:-0}" = "1" ]; then
     echo "[3/5] Installing CPU-only torch (GPU features will not work) ..."
-    "$PYTHON_BIN" -m pip install "torch>=2.1" \
+    "$PYTHON_BIN" -m pip install "${PIP_RESUME[@]}" "torch>=2.1" \
         --index-url "https://download.pytorch.org/whl/cpu"
 elif [ -n "${TORCH_CUDA:-}" ]; then
     echo "[3/5] Installing torch (pinned CUDA build: ${TORCH_CUDA}) ..."
-    "$PYTHON_BIN" -m pip install "torch>=2.1" \
+    "$PYTHON_BIN" -m pip install "${PIP_RESUME[@]}" "torch>=2.1" \
         --index-url "https://download.pytorch.org/whl/${TORCH_CUDA}"
 else
     echo "[3/5] Installing torch from PyPI (bundles CUDA on Linux) ..."
-    "$PYTHON_BIN" -m pip install "torch>=2.1"
+    "$PYTHON_BIN" -m pip install "${PIP_RESUME[@]}" "torch>=2.1"
 fi
 
 # ---------------------------------------------------------------------------
 # 4. Python dependencies
 # ---------------------------------------------------------------------------
 echo "[4/5] Installing project dependencies from requirements.txt ..."
-"$PYTHON_BIN" -m pip install -r requirements.txt
+"$PYTHON_BIN" -m pip install "${PIP_RESUME[@]}" -r requirements.txt
 
 # ---------------------------------------------------------------------------
 # 5. flash-attention (optional; needed by train_generator.py & eval_chagent_sar.py)
